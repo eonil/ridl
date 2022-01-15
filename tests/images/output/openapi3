@@ -30,7 +30,7 @@ components:
             Salmon:
               $ref: "#/components/schemas/Salmon"
           description: Good salmons are reddish.
-      description: "Edible objects.\n\nGood salmons are reddish."
+      description: Edible objects.
     Pet:
       title: Pet
       required:

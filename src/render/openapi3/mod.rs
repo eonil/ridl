@@ -92,7 +92,7 @@ impl KSumType {
     fn render_name_based_form(&self) -> Result<oa::ReferencedOrInlineSchema> {
         let mut k = oa::Schema::default();
         k.title.set(&self.name);
-        k.description.set(self.collect_all_comments().trim());
+        k.description.set(self.comment.trim());
         k.r#type.set("object");
         k.one_of = Some(self.variants.iter().map_collect_result(KSumTypeVariant::render_name_based_form)?);
         Ok(oa::ReferencedOrInlineSchema::Inline(k))
@@ -100,21 +100,12 @@ impl KSumType {
     fn render_type_based_form(&self, discriminant_prop_name: &str) -> Result<oa::ReferencedOrInlineSchema> {
         let mut k = oa::Schema::default();
         k.title.set(&self.name);
-        k.description.set(self.collect_all_comments().trim());
+        k.description.set(self.comment.trim());
         k.r#type.set("object");
         k.one_of = Some(self.variants.iter().map_collect_result(KSumTypeVariant::render_type_based_form)?);
         let d = k.discriminator.ridl_get_or_insert_default();
         d.property_name = discriminant_prop_name.to_string();
         Ok(oa::ReferencedOrInlineSchema::Inline(k))
-    }
-    fn collect_all_comments(&self) -> String {
-        let mut s = String::new();
-        s.push_str(&self.comment);
-        s.push_str("\n");
-        for x in self.variants.iter() {
-            s.push_str(&x.comment);
-        }
-        s
     }
 }
 

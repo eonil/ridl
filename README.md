@@ -4,6 +4,11 @@ Eonil, 2022.
 
 Rust code as IDL.
 
+- Define your interface data schema in Rust.
+- Your schema will be checked by the Rust type system.
+- Ruthlessly precise. Nothing ambiguous.
+
+
 
 
 Quickstart
@@ -60,7 +65,7 @@ components:
             Salmon:
               $ref: "#/components/schemas/Salmon"
           description: Good salmons are reddish.
-      description: "Edible objects.\n\nGood salmons are reddish."
+      description: Edible objects.
 ```
 
 And this Swift code.

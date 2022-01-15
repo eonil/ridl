@@ -34,6 +34,7 @@ type Tuna = String;
 type Salmon = String;
 
 /// Ingredients of magic.
+#[serde(Serialize, Deserialize)]
 enum Mineral {
     Iron,
     Alumina,
@@ -41,13 +42,14 @@ enum Mineral {
 }
 
 /// Edible objects.
-#[ridl(tag="type")]
+#[serde(Serialize, Deserialize)]
 enum Fish {
     Tuna(Tuna),
     /// Good salmons are reddish.
     Salmon(Salmon),
 }
 
+#[serde(Serialize, Deserialize)]
 struct Pet {
     name: Vec<String>,
     /// Did they take a walk today?
@@ -55,10 +57,12 @@ struct Pet {
     address: Option<Address>,
 }
 
+#[serde(Serialize, Deserialize)]
 struct Address {
     city: String,
 }
 
+#[serde(Serialize, Deserialize)]
 struct APIError {
     message: String,
 }
