@@ -1,6 +1,7 @@
 RIDL
 ====
 Eonil, 2022.
+
 [![Rust](https://github.com/eonil/ridl/actions/workflows/rust.yml/badge.svg)](https://github.com/eonil/ridl/actions/workflows/rust.yml)
 
 Rust code as IDL.
