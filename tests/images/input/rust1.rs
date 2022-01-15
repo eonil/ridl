@@ -11,7 +11,7 @@
 // #[ridl::http(query="Pet::address")]
 // #[ridl::http(error="404", type="APIError")]
 // type Func2 = dyn Fn(Pet) -> i32;
-// 
+
 // #[ridl::stream]
 // mod API2 {
 //     enum Input {
