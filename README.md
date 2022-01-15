@@ -145,7 +145,7 @@ cat src.rs | ridl swift5 --skip Tuna --skip Salmon >> dst.swift
 Now generated `dst.swift` file does not contain definitions for 
 `Tuna` and `Salmon`. You can provide your custom code to import
 your custom implementation in `prelude.swift` file.
-x
+
 With this `prelude.swift` file.
 ```swift
 import Hawaii
