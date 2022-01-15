@@ -26,6 +26,11 @@ struct Opt {
     /// You are supposed to provide type definitions yourself using <prelude> option.
     #[structopt(long="skip")]
     skippings: Vec<String>,
+
+    /// Rename field names to one of these cases.
+    /// For now the only supported option is `camel` which means `camelCase`.
+    #[structopt(long="rename")]
+    rename: Option<model::rename::Rule>,
 }
 #[derive(strum_macros::EnumString)]
 enum Language {
@@ -58,7 +63,8 @@ fn run() -> Result<()> {
     let ast = syn::parse_str::<syn::File>(&src)?;
     let mut model = scan::scan(&ast)?;
     model.retain_only_non_skipping_items(&opt.skippings);
-
+    model.rename(&model::rename::Options { field: opt.rename });
+    
     let dst = match opt.language {
         Language::RIDL1 => render::ridl1::render_ridl1(&model)?,
         Language::OpenAPI3 => render::openapi3::render_openapi3(&model)?,

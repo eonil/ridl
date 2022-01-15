@@ -8,6 +8,7 @@
 pub mod log;
 pub mod span;
 pub mod skip;
+pub mod rename;
 
 use serde_derive::{Serialize, Deserialize};
 
@@ -226,6 +227,3 @@ pub enum KPrimType {
     F64,
     String,
 }
-
-
-

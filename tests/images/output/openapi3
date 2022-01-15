@@ -44,7 +44,7 @@ components:
             type: string
         walk:
           type: boolean
-        address:
+        living_address:
           $ref: "#/components/schemas/Address"
     Address:
       title: Address

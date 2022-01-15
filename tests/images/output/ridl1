@@ -16,26 +16,26 @@ items:
       origin:
         Prim: String
   - Enum:
-      span: "36:0-42:1"
+      span: "36:0-43:1"
       name: Mineral
-      comment: "Ingredients of magic.\n"
+      comment: "Ingredients of magic.\n\n"
       cases:
-        - span: "39:4-39:8"
+        - span: "40:4-40:8"
           name: Iron
           comment: ""
-        - span: "40:4-40:11"
+        - span: "41:4-41:11"
           name: Alumina
           comment: ""
-        - span: "41:4-41:10"
+        - span: "42:4-42:10"
           name: Arcana
           comment: ""
   - Sum:
-      span: "44:0-50:1"
+      span: "45:0-52:1"
       name: Fish
-      comment: "Edible objects.\n"
+      comment: "Edible objects.\n\n"
       serialization: NameBased
       variants:
-        - span: "47:4-47:14"
+        - span: "49:4-49:14"
           name: Tuna
           comment: ""
           content:
@@ -43,9 +43,9 @@ items:
             array: false
             type:
               Def:
-                span: "47:9-47:13"
+                span: "49:9-49:13"
                 name: Tuna
-        - span: "48:4-49:18"
+        - span: "50:4-51:18"
           name: Salmon
           comment: Good salmons are reddish.
           content:
@@ -53,14 +53,14 @@ items:
             array: false
             type:
               Def:
-                span: "49:11-49:17"
+                span: "51:11-51:17"
                 name: Salmon
   - Prod:
-      span: "52:0-58:1"
+      span: "54:0-61:1"
       name: Pet
-      comment: ""
+      comment: "\n"
       fields:
-        - span: "54:4-54:21"
+        - span: "57:4-57:21"
           name: name
           comment: ""
           content:
@@ -68,7 +68,7 @@ items:
             array: true
             type:
               Prim: String
-        - span: "55:4-56:14"
+        - span: "58:4-59:14"
           name: walk
           comment: Did they take a walk today?
           content:
@@ -76,22 +76,22 @@ items:
             array: false
             type:
               Prim: Bool
-        - span: "57:4-57:28"
-          name: address
+        - span: "60:4-60:35"
+          name: living_address
           comment: ""
           content:
             optional: true
             array: false
             type:
               Def:
-                span: "57:20-57:27"
+                span: "60:27-60:34"
                 name: Address
   - Prod:
-      span: "60:0-63:1"
+      span: "63:0-67:1"
       name: Address
-      comment: ""
+      comment: "\n"
       fields:
-        - span: "62:4-62:16"
+        - span: "66:4-66:16"
           name: city
           comment: ""
           content:
@@ -100,11 +100,11 @@ items:
             type:
               Prim: String
   - Prod:
-      span: "65:0-68:1"
+      span: "69:0-73:1"
       name: APIError
-      comment: ""
+      comment: "\n"
       fields:
-        - span: "67:4-67:19"
+        - span: "72:4-72:19"
           name: message
           comment: ""
           content:
