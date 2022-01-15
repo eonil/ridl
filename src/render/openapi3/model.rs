@@ -42,7 +42,7 @@ pub struct Info {
     pub terms_of_service: Option<String>,
     pub contact: Option<Contact>,
     pub license: Option<License>,
-    pub version: Option<String>,
+    pub version: String,
 }
 
 #[skip_serializing_none]

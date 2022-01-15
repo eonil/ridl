@@ -3,6 +3,7 @@ openapi: 3.0.1
 info:
   title: ""
   description: "Here be dragons.\nFeatures below this line are currently supported."
+  version: ""
 paths: {}
 components:
   schemas:

@@ -24,9 +24,8 @@ See files in `tests/images` for actual samples.
 
 Code-Gen Illustrated
 --------------------
-Sum-type.
+This rust code.
 ```rust
-#[ridl(tag=type)]
 enum Fish {
     Tuna(Tuna),
     Salmon(Salmon),
@@ -34,6 +33,56 @@ enum Fish {
 type Tuna = String;
 type Salmon = String;
 ```
+
+Becomes this OpenAPI3 schema.
+```yaml
+---
+openapi: 3.0.1
+info:
+  title: ""
+  description: "Here be dragons.\nFeatures below this line are currently supported."
+  version: ""
+paths: {}
+components:
+  schemas:
+    Tuna:
+      type: string
+    Salmon:
+      type: string
+    Fish:
+      title: Fish
+      type: object
+      oneOf:
+        - properties:
+            Tuna:
+              $ref: "#/components/schemas/Tuna"
+        - properties:
+            Salmon:
+              $ref: "#/components/schemas/Salmon"
+          description: Good salmons are reddish.
+      description: "Edible objects.\n\nGood salmons are reddish."
+```
+
+And this Swift code.
+```swift
+typealias Tuna = String
+typealias Salmon = String
+/// Edible objects.
+enum Fish: Equatable, Codable {
+    case Tuna(Tuna)
+    /// Good salmons are reddish.
+    case Salmon(Salmon)
+}
+```
+
+And this TypeScript code.
+```typescript
+type Tuna = string
+type Salmon = string
+/// Edible objects.
+type Fish = { Tuna: Tuna } | { Salmon: Salmon }
+```
+
 
 
 
