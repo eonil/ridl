@@ -30,7 +30,7 @@ impl std::error::Error for ErrorLogs {}
 impl std::fmt::Display for ErrorLogs {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for x in self.0.iter() {
-            write!(f, "{}", x)?;
+            write!(f, "{}\n", x)?;
         }
         Ok(())
     }
