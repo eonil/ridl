@@ -126,7 +126,7 @@ Supported Schema Model
 ----------------------
 Only these things are supported.
 - Primitve types. (`bool`, `i32`, `f64`, `String`, JSON container does not support `i64` or `f32`)
-- New-type. (`type`)
+- New-type. (`type`, type-alias in fact)
 - Enum-type. (`enum`, finite constant set)
 - Sum-type. (`enum`, tagged union, variant name-based discrimination)
 - Product-type. (`struct`)
