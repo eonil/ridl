@@ -21,15 +21,11 @@ struct Opt {
     #[structopt(long="out")]
     output: Option<String>,
 
-    /// Prefix code for generated code.
-    /// You can put custom imports there.
-    #[structopt(long="prelude")]
-    prelude: Option<String>,
-    // /// Skipping type names.
-    // /// RIDL won't make code for types with names in `skippings`.
-    // /// You are supposed to provide type definitions yourself using <prelude> option.
-    // #[structopt(long="skip")]
-    // skippings: Vec<String>,
+    /// Skipping type names.
+    /// RIDL won't make code for types with names in `skippings`.
+    /// You are supposed to provide type definitions yourself using <prelude> option.
+    #[structopt(long="skip")]
+    skippings: Vec<String>,
 }
 #[derive(strum_macros::EnumString)]
 enum Language {
@@ -60,7 +56,9 @@ fn run() -> Result<()> {
     };
 
     let ast = syn::parse_str::<syn::File>(&src)?;
-    let model = scan::scan(&ast)?;
+    let mut model = scan::scan(&ast)?;
+    model.retain_only_non_skipping_items(&opt.skippings);
+
     let dst = match opt.language {
         Language::RIDL1 => render::ridl1::render_ridl1(&model)?,
         Language::OpenAPI3 => render::openapi3::render_openapi3(&model)?,

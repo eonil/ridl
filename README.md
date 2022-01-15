@@ -2,7 +2,7 @@ RIDL
 ====
 Eonil, 2022.
 
-Rust as IDL.
+Rust code as IDL.
 
 
 
@@ -56,4 +56,51 @@ Design Choices
 - No `serde` attribute support.
     - `serde` behavior is fully customizable by users. 
     - It's impossible to reproduce all possibilities.
+- No semantic analysis.
+    - No name reference resolution or dependency check.
+    - As Rust compiler will check all for them we don't need duplicated features.
 
+
+
+
+
+Supported Schema Model
+----------------------
+Only these things are supported.
+- Primitve types. (`bool`, `i32`, `i64`, `f32`, `f64`, `String`)
+- New-type. (`type`)
+- Enum-type. (`enum`, finite constant set)
+- Sum-type. (`enum`, tagged union, type-based discrimination)
+- Product-type. (`struct`)
+
+
+
+
+Code-Gen Skippin
+----------------
+Schema is a declarative representation of data structures.
+It's difficult or inefficient to represent everything in declarative form.
+You frequently need to define special types with special behaviors.
+For that, you can skip code-gen for certain types.
+
+Here's a command example.
+```sh
+cat prelude.swift > dst.swift
+cat src.rs | ridl swift5 --skip Type1 --skip Type2 >> dst.swift
+```
+
+Now generated `dst.swift` file does not contain definitions for 
+`Type1` and `Type2`. You can provide your custom code to import
+your custom implementation in `prelude.swift` file.
+
+
+
+
+
+
+License
+-------
+Using this code is licensed under "MIT License".
+Contributions will also be licensed under same license.
+Contributions mean agreement on this licensing terms.
+Copyright(c) 2022, Eonil. All rights reserved.

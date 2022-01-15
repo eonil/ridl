@@ -163,12 +163,12 @@ impl KTypeRef {
             Prim(KPrimType::F32) => inline("number", "float"),
             Prim(KPrimType::F64) => inline("number", "double"),
             Prim(KPrimType::String) => inline("string", ""),
-            Def(x) => Ok(oa::ReferencedOrInlineSchema::Referenced(oa::Reference { r#ref: x.name.clone() })),
+            Def(x) => Ok(oa::ReferencedOrInlineSchema::Referenced(oa::Reference { r#ref: make_opanapi3_ref(&x.name) })),
         }
     }
 }
 fn make_opanapi3_ref(name:&str) -> String {
-    "#/components/schemas/{name}".to_string()
+    format!("#/components/schemas/{}", name).to_string()
 }
 
 

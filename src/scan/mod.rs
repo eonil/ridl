@@ -49,8 +49,8 @@ impl syn::ItemMod {
         Ok(KItem::Mod(KMod {
             span: self.ident.span().scan(),
             name: self.ident.to_string(),
-            items: xs,
             comment: self.attrs.scan_doc_comment()?,
+            items: xs,
         }))
     }
 }
@@ -64,8 +64,8 @@ impl syn::ItemType {
         Ok(KItem::New(KNewType {
             span: self.span().scan(),
             name: self.ident.to_string(),
-            origin: (*self.ty).scan_as_single_ref()?,
             comment: self.attrs.scan_doc_comment()?,
+            origin: (*self.ty).scan_as_single_ref()?,
         }))
     }
 }
@@ -79,8 +79,8 @@ impl syn::ItemEnum {
             Ok(KItem::Enum(KEnumType {
                 span: self.span().scan(),
                 name: self.ident.to_string(),
-                cases: self.variants.iter().map_collect_result(syn::Variant::scan_enum_type_case)?,
                 comment: self.attrs.scan_doc_comment()?,
+                cases: self.variants.iter().map_collect_result(syn::Variant::scan_enum_type_case)?,
             }))
         }
         else {
@@ -89,8 +89,8 @@ impl syn::ItemEnum {
                 span: self.span().scan(),
                 name: self.ident.to_string(),
                 discriminant: self.attrs.scan_ridl_tag_name()?,
-                variants: self.variants.iter().map_collect_result(syn::Variant::scan_sum_type_variant)?,
                 comment: self.attrs.scan_doc_comment()?,
+                variants: self.variants.iter().map_collect_result(syn::Variant::scan_sum_type_variant)?,
             }))
         }
     }
@@ -123,8 +123,8 @@ impl syn::Variant {
         Ok(KSumTypeVariant {
             span: self.span().scan(),
             name: self.ident.to_string(),
-            content: first_unnamed_field.ty.scan()?,
             comment: self.attrs.scan_doc_comment()?,
+            content: first_unnamed_field.ty.scan()?,
         })
     }
 }
@@ -142,8 +142,8 @@ impl syn::ItemStruct {
         Ok(KItem::Prod(KProdType {
             span: self.span().scan(),
             name: self.ident.to_string(),
-            fields: self.fields.iter().map_collect_result(syn::Field::scan_prod_type_field)?,
             comment: self.attrs.scan_doc_comment()?,
+            fields: self.fields.iter().map_collect_result(syn::Field::scan_prod_type_field)?,
         }))
     }
 }
@@ -158,8 +158,8 @@ impl syn::Field {
         Ok(KProdTypeField {
             span: self.span().scan(),
             name: ident.to_string(),
-            content: self.ty.scan()?,
             comment: self.attrs.scan_doc_comment()?,
+            content: self.ty.scan()?,
         })
     }
 }
@@ -351,9 +351,13 @@ impl LineColumn {
 impl Vec<syn::Attribute> {
     fn scan_doc_comment(&self) -> Result<String> {
         let mut z = String::new();
+        let mut f = false;
         for x in self.iter() {
             z.push_str(&x.scan_doc_comment()?);
+            z.push_str("\n");
+            f = true;
         }
+        if f { z.pop(); }
         Ok(z)
     }
     fn scan_ridl_tag_name(&self) -> Result<Option<String>> {
