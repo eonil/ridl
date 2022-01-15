@@ -42,10 +42,10 @@ enum Mineral {
     Arcana,
 }
 
-/// Edible objects.
+/// Edibles.
 #[serde(Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
-enum Fish {
+enum Dish {
     Sushi(Tuna),
     /// Good salmons are reddish.
     PanFriedSteak(Salmon),

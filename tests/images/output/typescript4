@@ -11,8 +11,8 @@ enum Mineral {
     Arcana = "Arcana"  
 }
 
-/// Edible objects.
-type Fish = { Sushi: Tuna } | { PanFriedSteak: Salmon }
+/// Edibles.
+type Dish = { Sushi: Tuna } | { PanFriedSteak: Salmon }
 
 type Pet = {
     name: string[]

@@ -31,8 +31,8 @@ items:
           comment: ""
   - Sum:
       span: "45:0-52:1"
-      name: Fish
-      comment: "Edible objects.\n\n"
+      name: Dish
+      comment: "Edibles.\n\n"
       serialization: NameBased
       variants:
         - span: "49:4-49:15"

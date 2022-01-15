@@ -11,8 +11,8 @@ enum Mineral: String, Equatable, Codable {
     case Arcana = "Arcana"
 }
 
-/// Edible objects.
-enum Fish: Equatable, Codable {
+/// Edibles.
+enum Dish: Equatable, Codable {
     case Sushi(Tuna)
     /// Good salmons are reddish.
     case PanFriedSteak(Salmon)

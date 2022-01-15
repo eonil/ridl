@@ -19,8 +19,8 @@ components:
         - Arcana
       type: string
       description: Ingredients of magic.
-    Fish:
-      title: Fish
+    Dish:
+      title: Dish
       type: object
       oneOf:
         - properties:
@@ -30,7 +30,7 @@ components:
             PanFriedSteak:
               $ref: "#/components/schemas/Salmon"
           description: Good salmons are reddish.
-      description: Edible objects.
+      description: Edibles.
     Pet:
       title: Pet
       required:
