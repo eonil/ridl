@@ -8,6 +8,22 @@ Rust code as IDL.
 
 Quickstart
 ----------
+Prepare a Rust code file (`.rs`), and call command.
+This command generates Swift5 code.
+
+    ridl swift5 --in src.rs --out dst.swift
+
+You also can pipe.
+
+    cat src.rs | ridl swift5 > dst.swift
+
+See files in `tests/images` for actual samples.
+
+
+
+
+Code-Gen Illustrated
+--------------------
 Sum-type.
 ```rust
 #[ridl(tag=type)]
