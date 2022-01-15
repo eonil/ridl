@@ -111,8 +111,8 @@ Design Choices
 - Generates other language codes from mini schema.
 - No module/namespace support.
     - Everything will go to a top-level flatten namespace.
-- No `serde` attribute support.
-    - `serde` behavior is fully customizable by users. 
+- No `serde` behavior customization support.
+    - `serde` behavior is fully customizable by users.
     - It's impossible to reproduce all possibilities.
 - No semantic analysis.
     - No name reference resolution or dependency check.
