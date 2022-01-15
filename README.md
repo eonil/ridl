@@ -29,7 +29,7 @@ See files in `tests/images` for actual samples.
 
 Code-Gen Illustrated
 --------------------
-This rust code.
+This Rust code.
 ```rust
 enum Fish {
     Tuna(Tuna),
