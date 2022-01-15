@@ -20,8 +20,8 @@ items:
       name: Mineral
       comment: "Ingredients of magic.\n\n"
       cases:
-        - span: "40:4-40:8"
-          name: Iron
+        - span: "40:4-40:13"
+          name: IronMetal
           comment: ""
         - span: "41:4-41:11"
           name: Alumina
@@ -35,25 +35,25 @@ items:
       comment: "Edible objects.\n\n"
       serialization: NameBased
       variants:
-        - span: "49:4-49:14"
-          name: Tuna
+        - span: "49:4-49:15"
+          name: Sushi
           comment: ""
           content:
             optional: false
             array: false
             type:
               Def:
-                span: "49:9-49:13"
+                span: "49:10-49:14"
                 name: Tuna
-        - span: "50:4-51:18"
-          name: Salmon
+        - span: "50:4-51:25"
+          name: PanFriedSteak
           comment: Good salmons are reddish.
           content:
             optional: false
             array: false
             type:
               Def:
-                span: "51:11-51:17"
+                span: "51:18-51:24"
                 name: Salmon
   - Prod:
       span: "54:0-61:1"

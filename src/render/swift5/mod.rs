@@ -1,5 +1,3 @@
-mod test;
-
 use extend::ext;
 use indoc::indoc;
 
@@ -193,7 +191,7 @@ impl String {
     fn commentize(&self) -> String {
         let mut x = String::new();
         let mut f = false;
-        for line in self.lines() {
+        for line in self.trim().lines() {
             x.push_str("/// ");
             x.push_str(line);
             x.push_str("\n");

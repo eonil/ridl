@@ -5,22 +5,19 @@ typealias Tuna = String
 typealias Salmon = String
 
 /// Ingredients of magic.
-/// 
 enum Mineral: String, Equatable, Codable {
-    case Iron = "Iron"
+    case IronMetal = "IronMetal"
     case Alumina = "Alumina"
     case Arcana = "Arcana"
 }
 
 /// Edible objects.
-/// 
 enum Fish: Equatable, Codable {
-    case Tuna(Tuna)
+    case Sushi(Tuna)
     /// Good salmons are reddish.
-    case Salmon(Salmon)
+    case PanFriedSteak(Salmon)
 }
 
-/// 
 struct Pet: Equatable, Codable {
     var name: [String]
     /// Did they take a walk today?
@@ -28,12 +25,10 @@ struct Pet: Equatable, Codable {
     var living_address: Address?
 }
 
-/// 
 struct Address: Equatable, Codable {
     var city: String
 }
 
-/// 
 struct APIError: Equatable, Codable {
     var message: String
 }

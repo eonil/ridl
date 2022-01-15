@@ -63,7 +63,11 @@ fn run() -> Result<()> {
     let ast = syn::parse_str::<syn::File>(&src)?;
     let mut model = scan::scan(&ast)?;
     model.retain_only_non_skipping_items(&opt.skippings);
-    model.rename(&model::rename::Options { field: opt.rename });
+    model.rename(&model::rename::Options { 
+        case: opt.rename,
+        variant: opt.rename,
+        field: opt.rename,
+    });
     
     let dst = match opt.language {
         Language::RIDL1 => render::ridl1::render_ridl1(&model)?,

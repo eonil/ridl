@@ -14,7 +14,7 @@ components:
     Mineral:
       title: Mineral
       enum:
-        - Iron
+        - IronMetal
         - Alumina
         - Arcana
       type: string
@@ -24,10 +24,10 @@ components:
       type: object
       oneOf:
         - properties:
-            Tuna:
+            Sushi:
               $ref: "#/components/schemas/Tuna"
         - properties:
-            Salmon:
+            PanFriedSteak:
               $ref: "#/components/schemas/Salmon"
           description: Good salmons are reddish.
       description: Edible objects.

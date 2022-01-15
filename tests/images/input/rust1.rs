@@ -37,7 +37,7 @@ type Salmon = String;
 #[serde(Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 enum Mineral {
-    Iron,
+    IronMetal,
     Alumina,
     Arcana,
 }
@@ -46,9 +46,9 @@ enum Mineral {
 #[serde(Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 enum Fish {
-    Tuna(Tuna),
+    Sushi(Tuna),
     /// Good salmons are reddish.
-    Salmon(Salmon),
+    PanFriedSteak(Salmon),
 }
 
 #[serde(Serialize, Deserialize)]

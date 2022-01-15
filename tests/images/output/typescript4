@@ -7,14 +7,14 @@ type Salmon = string
 /// Ingredients of magic.
 /// 
 enum Mineral {
-    Iron = "Iron",
+    IronMetal = "IronMetal",
     Alumina = "Alumina",
     Arcana = "Arcana"  
 }
 
 /// Edible objects.
 /// 
-type Fish = { Tuna: Tuna } | { Salmon: Salmon }
+type Fish = { Sushi: Tuna } | { PanFriedSteak: Salmon }
 
 /// 
 type Pet = {

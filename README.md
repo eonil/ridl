@@ -178,6 +178,25 @@ to the generated code.
 
 
 
+Camel Case Renaming
+-------------------
+Rust's default field naming is `snake_case`.
+This is fine if your system is all in Rust, but can be a problem if you need to interact with other languages.
+In other languages, dominant convention is `camelCase`.
+You can rename all fields to `camelCase` with command line option like this.
+
+    ridl swift5 --rename camel
+  
+All sum-type variants and prod-type fields will be renamed accordingly.
+This does not modify existing Rust code. 
+You are responsible to make Rust code to produce `camelCase`d output.
+
+
+
+
+
+
+
 Schema Export
 -------------
 - Scanned minified RIDL schema can be exported as an YAML file.
