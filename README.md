@@ -187,7 +187,7 @@ You can rename all fields to `camelCase` with command line option like this.
 
     ridl swift5 --rename camel
   
-All sum-type variants and prod-type fields will be renamed accordingly.
+All enum-type cases, sum-type variants and prod-type fields will be renamed accordingly.
 This does not modify existing Rust code. 
 You are responsible to make Rust code to produce `camelCase`d output.
 
