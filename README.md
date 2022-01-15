@@ -176,6 +176,15 @@ to the generated code.
 
 
 
+Schema Export
+-------------
+- Scanned minified RIDL schema can be exported as an YAML file.
+- You can use the file to make your own automation tool.
+- RIDL schema is precisely defined in `src/model`.
+
+
+
+
 
 License
 -------
