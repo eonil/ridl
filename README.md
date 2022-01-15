@@ -89,22 +89,9 @@ type Fish = { Tuna: Tuna } | { Salmon: Salmon }
 
 Caveats
 -------
-First version won't perform semantic analysis.
+RIDL won't perform semantic analysis.
 Scans only at syntax level. Therefore, *RIDL won't solve types aliases*.
 **Use type names directly.**
-
-
-
-Attributes
-----------
-`#[ridl tag=ident]`
-- Optional attribute to control form of serializtion.
-- If defined, RIDL assumes the type will be serialized in ["internally tagged" (serde)](https://serde.rs/enum-representations.html#internally-tagged) manner.
-- Therefore generates code to read/write internally tagged form of data instaces.
-
-
-
-
 
 
 
@@ -136,14 +123,14 @@ Only these things are supported.
 - Primitve types. (`bool`, `i32`, `i64`, `f32`, `f64`, `String`)
 - New-type. (`type`)
 - Enum-type. (`enum`, finite constant set)
-- Sum-type. (`enum`, tagged union, type-based discrimination)
+- Sum-type. (`enum`, tagged union, variant name-based discrimination)
 - Product-type. (`struct`)
 
 
 
 
-Code-Gen Skippin
-----------------
+Code-Gen Skipping
+-----------------
 Schema is a declarative representation of data structures.
 It's difficult or inefficient to represent everything in declarative form.
 You frequently need to define special types with special behaviors.
@@ -152,12 +139,33 @@ For that, you can skip code-gen for certain types.
 Here's a command example.
 ```sh
 cat prelude.swift > dst.swift
-cat src.rs | ridl swift5 --skip Type1 --skip Type2 >> dst.swift
+cat src.rs | ridl swift5 --skip Tuna --skip Salmon >> dst.swift
 ```
 
 Now generated `dst.swift` file does not contain definitions for 
-`Type1` and `Type2`. You can provide your custom code to import
+`Tuna` and `Salmon`. You can provide your custom code to import
 your custom implementation in `prelude.swift` file.
+
+With this prelude file.
+```swift
+import Hawaii
+typealias Tuna = HawaiianTuna
+typealias Salmon = HawaiianSalmon
+```
+
+RIDL generates following parts.
+```swift
+/// Edible objects.
+enum Fish: Equatable, Codable {
+    case Tuna(Tuna)
+    /// Good salmons are reddish.
+    case Salmon(Salmon)
+}
+```
+
+Therefore combined, you can provide your custom implementation 
+to the generated code.
+
 
 
 
