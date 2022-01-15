@@ -145,15 +145,15 @@ cat src.rs | ridl swift5 --skip Tuna --skip Salmon >> dst.swift
 Now generated `dst.swift` file does not contain definitions for 
 `Tuna` and `Salmon`. You can provide your custom code to import
 your custom implementation in `prelude.swift` file.
-
-With this prelude file.
+x
+With this `prelude.swift` file.
 ```swift
 import Hawaii
 typealias Tuna = HawaiianTuna
 typealias Salmon = HawaiianSalmon
 ```
 
-RIDL generates following parts.
+RIDL generates following parts to `dst.swift` file.
 ```swift
 /// Edible objects.
 enum Fish: Equatable, Codable {
@@ -163,7 +163,7 @@ enum Fish: Equatable, Codable {
 }
 ```
 
-Therefore combined, you can provide your custom implementation 
+Therefore combined, you can bind your custom implementation 
 to the generated code.
 
 
