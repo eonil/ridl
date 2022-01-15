@@ -98,6 +98,8 @@ RIDL won't perform semantic analysis.
 Scans only at syntax level. Therefore, *RIDL won't solve types aliases*.
 **Use type names directly.**
 
+No support for modules or namespaces.
+All types will be placed in single root namespace.
 
 
 
