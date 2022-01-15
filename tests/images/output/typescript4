@@ -12,7 +12,7 @@ enum Mineral {
 }
 
 /// Edible objects.
-type Fish = Tuna | Salmon
+type Fish = { Tuna: Tuna } | { Salmon: Salmon }
 
 type Pet = {
     name: string[]

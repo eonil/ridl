@@ -33,7 +33,7 @@ items:
       span: "43:0-49:1"
       name: Fish
       comment: "Edible objects.\n"
-      discriminant: type
+      serialization: NameBased
       variants:
         - span: "46:4-46:14"
           name: Tuna

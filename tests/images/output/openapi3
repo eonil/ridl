@@ -22,11 +22,14 @@ components:
       title: Fish
       type: object
       oneOf:
-        - $ref: "#/components/schemas/Tuna"
-        - $ref: "#/components/schemas/Salmon"
+        - properties:
+            Tuna:
+              $ref: "#/components/schemas/Tuna"
+        - properties:
+            Salmon:
+              $ref: "#/components/schemas/Salmon"
+          description: Good salmons are reddish.
       description: "Edible objects.\n\nGood salmons are reddish."
-      discriminator:
-        propertyName: type
     Pet:
       title: Pet
       required:

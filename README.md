@@ -37,6 +37,7 @@ type Salmon = String;
 
 
 
+
 Caveats
 -------
 First version won't perform semantic analysis.
@@ -75,7 +76,7 @@ Design Choices
 - No semantic analysis.
     - No name reference resolution or dependency check.
     - As Rust compiler will check all for them we don't need duplicated features.
-
+- Sum-type serialization follows default form of Rust/Swift/Swithy.
 
 
 

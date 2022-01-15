@@ -105,11 +105,29 @@ pub struct KSumType {
     pub span: KSpan,
     pub name: String,
     pub comment: String,
-    /// Discriminant field name. 
-    /// This controls how variant discriminants to be serialized.
-    /// This is controlled by `#[ridl(tag="type")]` attribute.
-    pub discriminant: Option<String>,
+    pub serialization: KSumTypeSerializationForm,
     pub variants: Vec<KSumTypeVariant>,
+}
+#[derive(Serialize,Deserialize)]
+#[derive(Eq,PartialEq)]
+#[derive(Clone)]
+#[derive(Debug)]
+pub enum KSumTypeSerializationForm {
+    /// Default serialization form of Rust(serde), Swift(Codable) and Smithy.
+    /// Discriminant is a metadata of its content.
+    NameBased,
+    /// **NOT SUPPORTED FOR NOW**
+    /// =========================
+    /// Default serialization form of TypeScript and GraphQL.
+    /// Discriminant is embedded in content.
+    /// Therefore, content must be a prod-type.
+    /// In this case, name of discriminant property is required to eliminate ambiguity.
+    /// - `discriminant`: name of discriminant property embedded in content.
+    ///     This can be set by putting `#[ridl::form(tag="")]` on a sum-type definition.
+    TypeBased { discriminant: String },
+}
+impl Default for KSumTypeSerializationForm {
+    fn default() -> KSumTypeSerializationForm { KSumTypeSerializationForm::NameBased }
 }
 #[derive(Serialize,Deserialize)]
 #[derive(Eq,PartialEq)]

@@ -88,7 +88,7 @@ impl syn::ItemEnum {
             Ok(KItem::Sum(KSumType {
                 span: self.span().scan(),
                 name: self.ident.to_string(),
-                discriminant: self.attrs.scan_ridl_tag_name()?,
+                serialization: KSumTypeSerializationForm::NameBased,
                 comment: self.attrs.scan_doc_comment()?,
                 variants: self.variants.iter().map_collect_result(syn::Variant::scan_sum_type_variant)?,
             }))

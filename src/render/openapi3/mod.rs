@@ -83,13 +83,28 @@ impl KEnumType {
 #[ext(name=KSumTypeOpenAPI3Rendering)]
 impl KSumType {
     fn render(&self) -> Result<oa::ReferencedOrInlineSchema> {
+        use KSumTypeSerializationForm::*;
+        match &self.serialization {
+            NameBased => self.render_name_based_form(),
+            TypeBased { discriminant: x } => self.render_type_based_form(x),
+        }
+    }
+    fn render_name_based_form(&self) -> Result<oa::ReferencedOrInlineSchema> {
         let mut k = oa::Schema::default();
         k.title.set(&self.name);
         k.description.set(self.collect_all_comments().trim());
         k.r#type.set("object");
-        k.one_of = Some(self.variants.iter().map_collect_result(KSumTypeVariant::render)?);
+        k.one_of = Some(self.variants.iter().map_collect_result(KSumTypeVariant::render_name_based_form)?);
+        Ok(oa::ReferencedOrInlineSchema::Inline(k))
+    }
+    fn render_type_based_form(&self, discriminant_prop_name: &str) -> Result<oa::ReferencedOrInlineSchema> {
+        let mut k = oa::Schema::default();
+        k.title.set(&self.name);
+        k.description.set(self.collect_all_comments().trim());
+        k.r#type.set("object");
+        k.one_of = Some(self.variants.iter().map_collect_result(KSumTypeVariant::render_type_based_form)?);
         let d = k.discriminator.ridl_get_or_insert_default();
-        d.property_name = self.discriminant.clone().unwrap_or_default();
+        d.property_name = discriminant_prop_name.to_string();
         Ok(oa::ReferencedOrInlineSchema::Inline(k))
     }
     fn collect_all_comments(&self) -> String {
@@ -105,7 +120,15 @@ impl KSumType {
 
 #[ext(name=KSumTypeVariantOpenAPI3Rendering)]
 impl KSumTypeVariant {
-    fn render(&self) -> Result<oa::ReferencedOrInlineSchema> {
+    fn render_name_based_form(&self) -> Result<oa::ReferencedOrInlineSchema> {
+        let mut x = oa::Schema::default();
+        x.description.set(&self.comment);
+        let ps = x.properties.ridl_get_or_insert_default();
+        let p = self.content.render(self.span)?;
+        ps.insert(self.name.clone(), p);
+        Ok(oa::ReferencedOrInlineSchema::Inline(x))
+    }
+    fn render_type_based_form(&self) -> Result<oa::ReferencedOrInlineSchema> {
         if self.content.array == true { return err(self.span, "array is not supported in type-based sum-type") }
         if self.content.optional == true { return err(self.span, "optional is not supported in type-based sum-type") }
         self.content.r#type.render(self.span)

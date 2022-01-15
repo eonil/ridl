@@ -91,10 +91,10 @@ impl TypeScript4Rendering for KSumType {
 fn render_sum_type_variant(x:&KSumTypeVariant) -> Result<String> {
     Ok(format!(
         indoc!(r#"
-            {ty}
+            {{ {name}: {ty} }}
         "#),
         // comment=x.comment.commentize(),
-        // name=x.name,
+        name=x.name,
         ty=x.content.render(x.span)?,
     )).trim()
 }
