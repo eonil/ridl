@@ -36,7 +36,6 @@ impl std::fmt::Display for ErrorLogs {
     }
 }
 
-
 #[ext(name=VecLogUtil)] 
 pub impl<I,O,F> Vec<I> where F:Fn(&I)->Result<O> {
     fn map_collect_result(&self, fx:F) -> Result<Vec<O>> {
