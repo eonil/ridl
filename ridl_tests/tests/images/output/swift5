@@ -15,6 +15,7 @@ struct Pet: Equatable, Codable {
     /// Did they take a walk today?
     var walk: Bool
     var living_address: Address?
+    var contents: [u8]
 }
 
 struct Address: Equatable, Codable {

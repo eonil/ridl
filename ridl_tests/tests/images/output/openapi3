@@ -24,6 +24,7 @@ components:
       required:
         - name
         - walk
+        - contents
       type: object
       properties:
         name:
@@ -34,6 +35,10 @@ components:
           type: boolean
         living_address:
           $ref: "#/components/schemas/Address"
+        contents:
+          type: array
+          items:
+            $ref: "#/components/schemas/u8"
     Address:
       title: Address
       required:

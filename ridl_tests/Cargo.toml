@@ -1,0 +1,15 @@
+[package]
+name = "ridl_tests"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+extend = "1.1.2"
+syn = { version = "1.0.85", features = ["full"] }
+quote = "1.0"
+serde = "1.0.133"
+serde_derive = "1.0.133"
+serde_json = "1.0.74"
+serde_yaml = "0.8.23"
+ridl = { path = "../ridl" }
+ridl_derive = { path = "../ridl_derive" }
