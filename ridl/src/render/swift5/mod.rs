@@ -38,6 +38,7 @@ impl Swift5Rendering for KItem {
             Enum(x) => x.render(),
             Sum(x) => x.render(),
             Prod(x) => x.render(),
+            Func(x) => x.render(),
         }.trim()
     }
 }
@@ -130,6 +131,26 @@ impl Swift5Rendering for KProdTypeField {
         )).trim()
     }
 }
+
+impl Swift5Rendering for KFuncType {
+    fn render(&self) -> Result<String> {
+        Ok(format!(
+            indoc!(r#"
+                {comment}
+                typealias {name} = ({input}) -> ({output})
+            "#),
+            comment=self.comment.commentize(),
+            name=self.name,
+            input=self.input.render(self.span)?,
+            output=self.output.render(self.span)?,
+        ))
+    }
+}
+
+
+
+
+
 
 impl Swift5RenderingWithSpan for KContentStorage {
     fn render(&self, span:KSpan) -> Result<String> {

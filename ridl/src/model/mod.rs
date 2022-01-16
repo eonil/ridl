@@ -38,6 +38,7 @@ pub enum KItem {
     Enum(KEnumType),
     Sum(KSumType),
     Prod(KProdType),
+    Func(KFuncType),
 }
 impl KItem {
     pub fn span(&self) -> &KSpan {
@@ -48,6 +49,7 @@ impl KItem {
             Enum(x) => &x.span,
             Sum(x) => &x.span,
             Prod(x) => &x.span,
+            Func(x) => &x.span,
         }
     }
     pub fn name(&self) -> &str {
@@ -58,6 +60,7 @@ impl KItem {
             Enum(x) => x.name.as_str(),
             Sum(x) => x.name.as_str(),
             Prod(x) => x.name.as_str(),
+            Func(x) => x.name.as_str(),
         }
     }
 }
@@ -70,6 +73,9 @@ impl KItem {
 pub struct KNewType {
     pub span: KSpan,
     pub name: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if="is_default")]
+    pub attrs: KAttrs,
     pub comment: String,
     pub origin: KTypeRef,
 }
@@ -182,6 +188,32 @@ pub struct KProdTypeField {
     pub attrs: KAttrs,
     pub content: KContentStorage,
 }
+
+
+
+#[derive(Serialize,Deserialize)]
+#[derive(Eq,PartialEq)]
+#[derive(Default)]
+#[derive(Clone)]
+#[derive(Debug)]
+pub struct KFuncType {
+    pub span: KSpan,
+    pub name: String,
+    pub comment: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if="is_default")]
+    pub attrs: KAttrs,
+    pub input: KTypeRef,
+    pub output: KTypeRef,
+}
+    
+
+
+
+
+
+
+
 
 /// An inveted concept to simplify type definition.
 /// Proper support for optional/array types will require full support for generics.

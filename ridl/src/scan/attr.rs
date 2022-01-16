@@ -14,11 +14,19 @@ pub(super) impl Vec<syn::Attribute> {
             let n = ir.name.as_str();
             let k = ir.params.iter().next().map(ir::AttrParam::key).unwrap_or("");
             let m = match (n,k) {
-                ("rest","in") => KAttrREST::In,
-                ("rest","out") => KAttrREST::Out,
-                ("path","") => KAttrREST::Path,
-                ("query","") => KAttrREST::Query,
-                ("body","") => KAttrREST::Body,
+                ("rest","in") => KAttrREST::MessageIn,
+                ("rest","out") => KAttrREST::MessageOut,
+                // ("rest", _) => {
+                //     if ir.params.len() == 2 {} else { return err(a, BAD_FORM_ERR) }
+                //     let k = if let ir::AttrParam::Key(k) = &ir.params[0] { k } else { return err(a, BAD_FORM_ERR) };
+                //     let v = if let ir::AttrParam::Value(ir::AttrValue::String(v)) = &ir.params[1] { v } else { return err(a, BAD_FORM_ERR) };
+                //     x.rest.push(KAttrREST::FnMethod(k.to_string()));
+                //     x.rest.push(KAttrREST::FnPath(v.to_owned()));
+                //     continue;
+                // },
+                ("path","") => KAttrREST::PathParam,
+                ("query","") => KAttrREST::QueryParam,
+                ("body","") => KAttrREST::BodyParam,
                 _ => {
                     let v = ir.params.iter().next().map(ir::AttrParam::value);
                     match (n,v) {
@@ -64,7 +72,7 @@ mod test {
         let d = c.scan().unwrap();
         assert_eq!(d, KAttrs {
             rest: vec![
-                KAttrREST::In,
+                KAttrREST::MessageIn,
             ],
         });
     }
