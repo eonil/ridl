@@ -1,5 +1,7 @@
 #![cfg(test)]
 
+mod rest;
+
 use ::ridl::*;
 // use crate::model;
 use crate::scan::*;

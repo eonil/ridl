@@ -1,5 +1,5 @@
 [workspace]
 members = [
     "ridl",
-    "ridl_attrs",
+    "ridl_derive",
 ]

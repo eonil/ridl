@@ -1,0 +1,11 @@
+[package]
+name = "ridl_derive"
+version = "0.0.0"
+edition = "2021"
+description = "Macros to control code-gen of RIDL."
+
+[dependencies]
+
+[lib]
+proc-macro = true
+doctest = false

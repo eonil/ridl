@@ -251,6 +251,7 @@ dependencies = [
  "linear-map",
  "proc-macro2",
  "quote",
+ "ridl_derive",
  "serde",
  "serde_derive",
  "serde_json",
@@ -263,7 +264,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ridl_attrs"
+name = "ridl_derive"
 version = "0.0.0"
 
 [[package]]
