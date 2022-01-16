@@ -1,0 +1,128 @@
+---
+span: "0:0-0:0"
+name: ""
+comment: Here be dragons.
+items:
+  - New:
+      span: "3:0-3:19"
+      name: Tuna
+      comment: ""
+      origin:
+        Prim: String
+  - Enum:
+      span: "6:0-13:1"
+      name: Mineral
+      comment: "Ingredients of magic.\n\n"
+      cases:
+        - span: "10:4-10:13"
+          name: ironMetal
+          comment: ""
+        - span: "11:4-11:11"
+          name: alumina
+          comment: ""
+        - span: "12:4-12:10"
+          name: arcana
+          comment: ""
+  - Prod:
+      span: "15:0-25:1"
+      name: Pet
+      comment: "\n\n"
+      attrs:
+        rest:
+          - In
+      fields:
+        - span: "19:4-19:21"
+          name: name
+          comment: ""
+          content:
+            optional: false
+            array: true
+            type:
+              Prim: String
+        - span: "20:4-22:14"
+          name: walk
+          comment: "Did they take a walk today?\n"
+          attrs:
+            rest:
+              - Query
+          content:
+            optional: false
+            array: false
+            type:
+              Prim: Bool
+        - span: "23:4-24:35"
+          name: livingAddress
+          comment: ""
+          attrs:
+            rest:
+              - Path
+          content:
+            optional: true
+            array: false
+            type:
+              Def:
+                span: "24:27-24:34"
+                name: Address
+  - Prod:
+      span: "27:0-31:1"
+      name: Address
+      comment: "\n"
+      fields:
+        - span: "30:4-30:16"
+          name: city
+          comment: ""
+          content:
+            optional: false
+            array: false
+            type:
+              Prim: String
+  - Sum:
+      span: "33:0-45:1"
+      name: Dish
+      comment: "Edibles.\n\n\n"
+      serialization: NameBased
+      attrs:
+        rest:
+          - Out
+      variants:
+        - span: "38:4-40:15"
+          name: sushi
+          comment: "\n"
+          attrs:
+            rest:
+              - Status: 200
+              - MIME: application/json
+          content:
+            optional: false
+            array: false
+            type:
+              Def:
+                span: "40:10-40:14"
+                name: Tuna
+        - span: "41:4-44:25"
+          name: panFriedSteak
+          comment: "Good salmons are reddish.\n\n"
+          attrs:
+            rest:
+              - Status: 401
+              - MIME: application/json
+          content:
+            optional: false
+            array: false
+            type:
+              Def:
+                span: "44:18-44:24"
+                name: Salmon
+  - Prod:
+      span: "47:0-51:1"
+      name: APIError
+      comment: "\n"
+      fields:
+        - span: "50:4-50:19"
+          name: message
+          comment: ""
+          content:
+            optional: false
+            array: false
+            type:
+              Prim: String

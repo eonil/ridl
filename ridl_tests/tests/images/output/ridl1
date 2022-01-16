@@ -30,7 +30,7 @@ items:
           name: Arcana
           comment: ""
   - Prod:
-      span: "15:0-25:1"
+      span: "15:0-28:1"
       name: Pet
       comment: "\n\n"
       attrs:
@@ -69,12 +69,26 @@ items:
               Def:
                 span: "24:27-24:34"
                 name: Address
+        - span: "25:4-27:21"
+          name: contents
+          comment: "\n"
+          attrs:
+            rest:
+              - Body
+              - MIME: application/octet-stream
+          content:
+            optional: false
+            array: true
+            type:
+              Def:
+                span: "27:18-27:20"
+                name: u8
   - Prod:
-      span: "27:0-31:1"
+      span: "30:0-34:1"
       name: Address
       comment: "\n"
       fields:
-        - span: "30:4-30:16"
+        - span: "33:4-33:16"
           name: city
           comment: ""
           content:
@@ -83,7 +97,7 @@ items:
             type:
               Prim: String
   - Sum:
-      span: "33:0-45:1"
+      span: "36:0-48:1"
       name: Dish
       comment: "Edibles.\n\n\n"
       serialization: NameBased
@@ -91,7 +105,7 @@ items:
         rest:
           - Out
       variants:
-        - span: "38:4-40:15"
+        - span: "41:4-43:15"
           name: Sushi
           comment: "\n"
           attrs:
@@ -103,9 +117,9 @@ items:
             array: false
             type:
               Def:
-                span: "40:10-40:14"
+                span: "43:10-43:14"
                 name: Tuna
-        - span: "41:4-44:25"
+        - span: "44:4-47:25"
           name: PanFriedSteak
           comment: "Good salmons are reddish.\n\n"
           attrs:
@@ -117,14 +131,14 @@ items:
             array: false
             type:
               Def:
-                span: "44:18-44:24"
+                span: "47:18-47:24"
                 name: Salmon
   - Prod:
-      span: "47:0-51:1"
+      span: "50:0-54:1"
       name: APIError
       comment: "\n"
       fields:
-        - span: "50:4-50:19"
+        - span: "53:4-53:19"
           name: message
           comment: ""
           content:

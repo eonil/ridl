@@ -15,6 +15,7 @@ type Pet = {
     /// Did they take a walk today?
     walk: boolean
     living_address?: Address
+    contents: u8[]
 }
 
 type Address = {

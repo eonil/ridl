@@ -1,0 +1,63 @@
+---
+openapi: 3.0.1
+info:
+  title: ""
+  description: Here be dragons.
+  version: ""
+paths: {}
+components:
+  schemas:
+    Tuna:
+      type: string
+    Mineral:
+      title: Mineral
+      enum:
+        - ironMetal
+        - alumina
+        - arcana
+      type: string
+      description: Ingredients of magic.
+    Pet:
+      title: Pet
+      required:
+        - name
+        - walk
+      type: object
+      properties:
+        name:
+          type: array
+          items:
+            type: string
+        walk:
+          type: boolean
+        livingAddress:
+          $ref: "#/components/schemas/Address"
+    Address:
+      title: Address
+      required:
+        - city
+      type: object
+      properties:
+        city:
+          type: string
+    Dish:
+      title: Dish
+      type: object
+      oneOf:
+        - properties:
+            sushi:
+              $ref: "#/components/schemas/Tuna"
+          description: "\n"
+        - properties:
+            panFriedSteak:
+              $ref: "#/components/schemas/Salmon"
+          description: "Good salmons are reddish.\n\n"
+      description: Edibles.
+    APIError:
+      title: APIError
+      required:
+        - message
+      type: object
+      properties:
+        message:
+          type: string
