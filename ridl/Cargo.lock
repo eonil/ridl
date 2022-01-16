@@ -263,10 +263,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ridl_attrs"
-version = "0.0.0"
-
-[[package]]
 name = "rustversion"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"

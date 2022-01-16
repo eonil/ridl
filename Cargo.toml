@@ -1,23 +1,5 @@
-[package]
-name = "ridl"
-version = "0.0.0"
-edition = "2021"
-description = "Rust as IDL."
-
-[dependencies]
-extend = "1.1.2"
-syn = { version = "1.0.85", features = ["full"] }
-quote = "1.0"
-proc-macro2 = { version = "1.0.36", features = ["span-locations"] }
-serde = "1.0.133"
-serde_derive = "1.0.133"
-serde_json = "1.0.74"
-serde_yaml = "0.8.23"
-im = "15.0.0"
-im-rc = "15.0.0"
-indoc = "1.0"
-linear-map = { version = "1.2.0", features = ["serde_impl"] }
-serde_with = "1.11.0"
-structopt = { version = "0.3", default-features = false }
-strum = { version = "0.23", features = ["derive"] }
-strum_macros = "0.23"
+[workspace]
+members = [
+    "ridl",
+    "ridl_attrs",
+]

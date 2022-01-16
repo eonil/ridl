@@ -1,0 +1,17 @@
+----
+functions:
+  - comment: | 
+      Submits an order.
+    attributes:
+      - private
+    input:
+      method: POST
+      path: /order/submit
+      query: OrderSubmitInput
+    output:
+      - status: 200
+        body: OrderSubmitOutput
+        comment: OK.
+      - status: 401
+        body: APIError
+        comment: Unauthorized.
