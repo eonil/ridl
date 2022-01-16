@@ -48,11 +48,15 @@ use proc_macro::TokenStream;
 /// 
 /// There are multiple discussions related to this issue.
 /// - https://github.com/rust-lang/rust/issues/65823
-#[proc_macro_derive(RIDL, attributes(rest, query, status, path, status, mime))]
-pub fn derive_ridl(_item: TokenStream) -> TokenStream {
+#[proc_macro_derive(RIDL, attributes(rest, input, output, location, status, mime))]
+pub fn ridl(_item: TokenStream) -> TokenStream {
     TokenStream::new()
 }
 
+#[proc_macro_attribute]
+pub fn rest(_attr:TokenStream, item: TokenStream) -> TokenStream {
+    item
+}
 
 
 // !     #[rest(GET="/order/item")]

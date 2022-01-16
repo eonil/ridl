@@ -219,6 +219,10 @@ instead of Schema object.
 
 ```rust
 #[derive(RIDL)]
+#[rest(GET,"/api/feature")]
+type Feature = dyn Fn(Input) -> Output;
+
+#[derive(RIDL)]
 [rest(in)]
 struct Input {
     #[query]

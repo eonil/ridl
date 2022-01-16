@@ -1,148 +1,195 @@
----
-span: "0:0-0:0"
-name: ""
-comment: Here be dragons.
-items:
-  - New:
-      span: "3:0-3:19"
-      name: Tuna
-      comment: ""
-      origin:
-        Prim: String
-  - New:
-      span: "4:0-4:21"
-      name: Salmon
-      comment: ""
-      origin:
-        Prim: String
-  - Enum:
-      span: "6:0-13:1"
-      name: Mineral
-      comment: "Ingredients of magic.\n\n"
-      cases:
-        - span: "10:4-10:13"
-          name: IronMetal
-          comment: ""
-        - span: "11:4-11:11"
-          name: Alumina
-          comment: ""
-        - span: "12:4-12:10"
-          name: Arcana
-          comment: ""
-  - Prod:
-      span: "15:0-28:1"
-      name: Pet
-      comment: "\n\n"
-      attrs:
-        rest:
-          - In
-      fields:
-        - span: "19:4-19:21"
-          name: name
-          comment: ""
-          content:
-            optional: false
-            array: true
-            type:
-              Prim: String
-        - span: "20:4-22:14"
-          name: walk
-          comment: "Did they take a walk today?\n"
-          attrs:
-            rest:
-              - Query
-          content:
-            optional: false
-            array: false
-            type:
-              Prim: Bool
-        - span: "23:4-24:35"
-          name: living_address
-          comment: ""
-          attrs:
-            rest:
-              - Path
-          content:
-            optional: true
-            array: false
-            type:
-              Def:
-                span: "24:27-24:34"
-                name: Address
-        - span: "25:4-27:21"
-          name: contents
-          comment: "\n"
-          attrs:
-            rest:
-              - Body
-              - MIME: application/octet-stream
-          content:
-            optional: false
-            array: true
-            type:
-              Def:
-                span: "27:18-27:20"
-                name: u8
-  - Prod:
-      span: "30:0-34:1"
-      name: Address
-      comment: "\n"
-      fields:
-        - span: "33:4-33:16"
-          name: city
-          comment: ""
-          content:
-            optional: false
-            array: false
-            type:
-              Prim: String
-  - Sum:
-      span: "36:0-48:1"
-      name: Dish
-      comment: "Edibles.\n\n\n"
-      serialization: NameBased
-      attrs:
-        rest:
-          - Out
-      variants:
-        - span: "41:4-43:15"
-          name: Sushi
-          comment: "\n"
-          attrs:
-            rest:
-              - Status: 200
-              - MIME: application/json
-          content:
-            optional: false
-            array: false
-            type:
-              Def:
-                span: "43:10-43:14"
-                name: Tuna
-        - span: "44:4-47:25"
-          name: PanFriedSteak
-          comment: "Good salmons are reddish.\n\n"
-          attrs:
-            rest:
-              - Status: 401
-              - MIME: application/json
-          content:
-            optional: false
-            array: false
-            type:
-              Def:
-                span: "47:18-47:24"
-                name: Salmon
-  - Prod:
-      span: "50:0-54:1"
-      name: APIError
-      comment: "\n"
-      fields:
-        - span: "53:4-53:19"
-          name: message
-          comment: ""
-          content:
-            optional: false
-            array: false
-            type:
-              Prim: String
+ItemType {
+    attrs: [],
+    vis: Inherited,
+    type_token: Type,
+    ident: Ident {
+        sym: Tuna,
+        span: bytes(28..32),
+    },
+    generics: Generics {
+        lt_token: None,
+        params: [],
+        gt_token: None,
+        where_clause: None,
+    },
+    eq_token: Eq,
+    ty: Path(
+        TypePath {
+            qself: None,
+            path: Path {
+                leading_colon: None,
+                segments: [
+                    PathSegment {
+                        ident: Ident {
+                            sym: String,
+                            span: bytes(35..41),
+                        },
+                        arguments: None,
+                    },
+                ],
+            },
+        },
+    ),
+    semi_token: Semi,
+}
+ItemType {
+    attrs: [],
+    vis: Inherited,
+    type_token: Type,
+    ident: Ident {
+        sym: Salmon,
+        span: bytes(48..54),
+    },
+    generics: Generics {
+        lt_token: None,
+        params: [],
+        gt_token: None,
+        where_clause: None,
+    },
+    eq_token: Eq,
+    ty: Path(
+        TypePath {
+            qself: None,
+            path: Path {
+                leading_colon: None,
+                segments: [
+                    PathSegment {
+                        ident: Ident {
+                            sym: String,
+                            span: bytes(57..63),
+                        },
+                        arguments: None,
+                    },
+                ],
+            },
+        },
+    ),
+    semi_token: Semi,
+}
+ItemType {
+    attrs: [
+        Attribute {
+            pound_token: Pound,
+            style: Outer,
+            bracket_token: Bracket,
+            path: Path {
+                leading_colon: None,
+                segments: [
+                    PathSegment {
+                        ident: Ident {
+                            sym: rest,
+                            span: bytes(218..222),
+                        },
+                        arguments: None,
+                    },
+                ],
+            },
+            tokens: TokenStream [
+                Group {
+                    delimiter: Parenthesis,
+                    stream: TokenStream [
+                        Ident {
+                            sym: GET,
+                            span: bytes(223..226),
+                        },
+                        Punct {
+                            char: ',',
+                            spacing: Alone,
+                            span: bytes(226..227),
+                        },
+                        Literal {
+                            lit: "/pet/dish",
+                            span: bytes(227..238),
+                        },
+                    ],
+                    span: bytes(222..239),
+                },
+            ],
+        },
+    ],
+    vis: Inherited,
+    type_token: Type,
+    ident: Ident {
+        sym: pet_dish,
+        span: bytes(246..254),
+    },
+    generics: Generics {
+        lt_token: None,
+        params: [],
+        gt_token: None,
+        where_clause: None,
+    },
+    eq_token: Eq,
+    ty: TraitObject(
+        TypeTraitObject {
+            dyn_token: Some(
+                Dyn,
+            ),
+            bounds: [
+                Trait(
+                    TraitBound {
+                        paren_token: None,
+                        modifier: None,
+                        lifetimes: None,
+                        path: Path {
+                            leading_colon: None,
+                            segments: [
+                                PathSegment {
+                                    ident: Ident {
+                                        sym: Fn,
+                                        span: bytes(261..263),
+                                    },
+                                    arguments: Parenthesized(
+                                        ParenthesizedGenericArguments {
+                                            paren_token: Paren,
+                                            inputs: [
+                                                Path(
+                                                    TypePath {
+                                                        qself: None,
+                                                        path: Path {
+                                                            leading_colon: None,
+                                                            segments: [
+                                                                PathSegment {
+                                                                    ident: Ident {
+                                                                        sym: Pet,
+                                                                        span: bytes(264..267),
+                                                                    },
+                                                                    arguments: None,
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                ),
+                                            ],
+                                            output: Type(
+                                                RArrow,
+                                                Path(
+                                                    TypePath {
+                                                        qself: None,
+                                                        path: Path {
+                                                            leading_colon: None,
+                                                            segments: [
+                                                                PathSegment {
+                                                                    ident: Ident {
+                                                                        sym: Dish,
+                                                                        span: bytes(272..276),
+                                                                    },
+                                                                    arguments: None,
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                ),
+                                            ),
+                                        },
+                                    ),
+                                },
+                            ],
+                        },
+                    },
+                ),
+            ],
+        },
+    ),
+    semi_token: Semi,
+}

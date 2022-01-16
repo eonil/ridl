@@ -1,8 +1,26 @@
 use serde::{Serialize,Deserialize};
+use crate::prelude::PVec;
 use crate::model::log::ErrorLogs;
 use crate::model::log::Result;
 use crate::scan::err::ResultConversion;
 use crate::scan::err;
+
+pub fn scan(x:&Vec<syn::Attribute>) -> Result<Vec<Attr>> {
+    let mut vals = Vec::new();
+    let mut errs = PVec::new();
+    for xx in x.iter() {
+        match Attr::try_from(xx) {
+            Ok(v) => vals.push(v),
+            Err(e) => errs.extend(e.0),
+        }
+    }
+    if errs.is_empty() { 
+        Ok(vals)
+    }
+    else {
+        Err(ErrorLogs(errs))
+    }
+}
 
 /// Reduce Rust attribute syntax to a simpler form.
 /// An attribute can be one of these forms.
@@ -12,11 +30,13 @@ use crate::scan::err;
 ///     #[a(b,c,d)]
 ///     #[a("B",222,false)]
 ///     #[a(b="B",c=222,false)]
+///     #[a="aaa"]
 /// ```
 /// 
 /// - Always have a name.
 /// - Optional key-value list.
 /// - Key or value can be ommited.
+/// - For the last form (`#[a="aaa"]`), name and first param's key are same.
 /// 
 #[derive(Serialize,Deserialize)]
 #[derive(Eq,PartialEq)]

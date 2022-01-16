@@ -12,6 +12,9 @@ enum Mineral {
     Arcana,
 }
 
+#[rest(GET,"/pet/dish")]
+type pet_dish = dyn Fn(Pet) -> Dish;
+
 #[serde(Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 #[rest(in)]

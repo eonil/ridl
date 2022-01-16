@@ -7,6 +7,9 @@ set -e
 test -f Cargo.toml
 test -f ridl_tests/Cargo.toml
 
+function help() {
+    echo "last command exit with $?"
+}
 cd ridl_tests
 rm -rf tmp
 mkdir -p tmp

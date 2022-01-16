@@ -15,14 +15,19 @@ pub struct KAttrs {
 #[derive(Clone)]
 #[derive(Debug)]
 pub enum KAttrREST {
-    In,
-    Out,
-    Path,
-    Query,
-    Body,
+    FnMethod(String),
+    FnPath(String),
+    MessageIn,
+    MessageOut,
+    PathParam,
+    QueryParam,
+    BodyParam,
     Status(i64),
     MIME(String),
 }
+
+pub type KAttrRESTHTTPMethod = String;
+pub type KAttrRESTHTTPPath = String;
 
 fn is_default(x:&Vec<KAttrREST>) -> bool {
     *x == Vec::default()

@@ -7,6 +7,9 @@ set -e
 test -f Cargo.toml
 test -f ridl_tests/Cargo.toml
 
+function help() {
+    echo "last command exit with $?"
+}
 cd ridl_tests
 mkdir -p tests/images/output
 RUN="cargo run --manifest-path ../ridl/Cargo.toml -- "

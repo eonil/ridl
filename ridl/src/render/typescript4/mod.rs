@@ -38,6 +38,7 @@ impl TypeScript4Rendering for KItem {
             Enum(x) => x.render(),
             Sum(x) => x.render(),
             Prod(x) => x.render(),
+            Func(x) => x.render(),
         }.trim()
     }
 }
@@ -128,6 +129,26 @@ impl TypeScript4Rendering for KProdTypeField {
         )).trim()
     }
 }
+
+impl TypeScript4Rendering for KFuncType {
+    fn render(&self) -> Result<String> {
+        Ok(format!(
+            indoc!(r#"
+                {comment}
+                declare function {name}({input}): {output}
+                }}
+            "#),
+            comment=self.comment.commentize(),
+            name=self.name,
+            input=self.input.render(self.span)?,
+            output=self.output.render(self.span)?,
+        ))
+    }
+}
+
+
+
+
 
 impl TypeScript4RenderingWithSpan for KContentStorage {
     fn render(&self, span:KSpan) -> Result<String> {
