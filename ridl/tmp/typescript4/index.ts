@@ -1,20 +1,18 @@
 /// Here be dragons.
 type Tuna = string
 
-type Salmon = string
-
 /// Ingredients of magic.
 enum Mineral {
-    IronMetal = "IronMetal",
-    Alumina = "Alumina",
-    Arcana = "Arcana"  
+    ironMetal = "ironMetal",
+    alumina = "alumina",
+    arcana = "arcana"  
 }
 
 type Pet = {
     name: string[]
     /// Did they take a walk today?
     walk: boolean
-    living_address?: Address
+    livingAddress?: Address
 }
 
 type Address = {
@@ -22,7 +20,7 @@ type Address = {
 }
 
 /// Edibles.
-type Dish = { Sushi: Tuna } | { PanFriedSteak: Salmon }
+type Dish = { sushi: Tuna } | { panFriedSteak: Salmon }
 
 type APIError = {
     message: string

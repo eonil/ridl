@@ -7,6 +7,7 @@
 
 pub mod log;
 pub mod span;
+pub mod attr;
 pub mod skip;
 pub mod rename;
 pub mod rest;
@@ -14,6 +15,7 @@ pub mod rest;
 use serde_derive::{Serialize, Deserialize};
 
 pub use span::{KSpan, KLineColumn};
+pub use attr::{KAttrs, KAttrREST};
 
 #[derive(Serialize,Deserialize)]
 #[derive(Eq,PartialEq)]
@@ -108,6 +110,9 @@ pub struct KSumType {
     pub name: String,
     pub comment: String,
     pub serialization: KSumTypeSerializationForm,
+    #[serde(default)]
+    #[serde(skip_serializing_if="is_default")]
+    pub attrs: KAttrs,
     pub variants: Vec<KSumTypeVariant>,
 }
 #[derive(Serialize,Deserialize)]
@@ -140,6 +145,9 @@ pub struct KSumTypeVariant {
     pub span: KSpan,
     pub name: String,
     pub comment: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if="is_default")]
+    pub attrs: KAttrs,
     /// Type of stored data in this sum-type variant.
     /// Name-based sum-types can define array/optional content.
     /// Type-based sum-types only can define explicit reference to other type.
@@ -155,6 +163,9 @@ pub struct KProdType {
     pub span: KSpan,
     pub name: String,
     pub comment: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if="is_default")]
+    pub attrs: KAttrs,
     pub fields: Vec<KProdTypeField>,
 }
 #[derive(Serialize,Deserialize)]
@@ -166,6 +177,9 @@ pub struct KProdTypeField {
     pub span: KSpan,
     pub name: String,
     pub comment: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if="is_default")]
+    pub attrs: KAttrs,
     pub content: KContentStorage,
 }
 
@@ -227,4 +241,13 @@ pub enum KPrimType {
     F32,
     F64,
     String,
+}
+
+
+
+
+
+
+fn is_default(x:&KAttrs) -> bool {
+    *x == KAttrs::default()
 }

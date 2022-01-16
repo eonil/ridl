@@ -1,11 +1,17 @@
+mod span;
+mod ir;
+mod attr;
+mod err;
+
 use std::string::ToString;
 use syn::spanned::Spanned;
 use extend::ext;
-use proc_macro2::{Span,LineColumn};
 
 use crate::prelude::*;
 use crate::model::*;
 use crate::model::log::*;
+use span::SpanScan;
+use attr::VecAttrScan;
 
 pub fn scan(x: &syn::File) -> Result<KMod> {
     x.scan()
@@ -89,6 +95,7 @@ impl syn::ItemEnum {
                 span: self.span().scan(),
                 name: self.ident.to_string(),
                 serialization: KSumTypeSerializationForm::NameBased,
+                attrs: self.attrs.scan()?,
                 comment: self.attrs.scan_doc_comment()?,
                 variants: self.variants.iter().map_collect_result(syn::Variant::scan_sum_type_variant)?,
             }))
@@ -123,6 +130,7 @@ impl syn::Variant {
         Ok(KSumTypeVariant {
             span: self.span().scan(),
             name: self.ident.to_string(),
+            attrs: self.attrs.scan()?,
             comment: self.attrs.scan_doc_comment()?,
             content: first_unnamed_field.ty.scan()?,
         })
@@ -142,6 +150,7 @@ impl syn::ItemStruct {
         Ok(KItem::Prod(KProdType {
             span: self.span().scan(),
             name: self.ident.to_string(),
+            attrs: self.attrs.scan()?,
             comment: self.attrs.scan_doc_comment()?,
             fields: self.fields.iter().map_collect_result(syn::Field::scan_prod_type_field)?,
         }))
@@ -158,6 +167,7 @@ impl syn::Field {
         Ok(KProdTypeField {
             span: self.span().scan(),
             name: ident.to_string(),
+            attrs: self.attrs.scan()?,
             comment: self.attrs.scan_doc_comment()?,
             content: self.ty.scan()?,
         })
@@ -326,24 +336,6 @@ impl syn::Path {
 
 
 
-#[ext(name=SpanScan)]
-impl Span {
-    fn scan(&self) -> KSpan {
-        KSpan {
-            start: self.start().scan(),
-            end: self.end().scan(),
-        }
-    }
-}
-#[ext(name=LineColumnScan)]
-impl LineColumn {
-    fn scan(&self) -> KLineColumn {
-        KLineColumn {
-            line: self.line,
-            column: self.column,
-        }
-    }
-}
 
 
 
@@ -360,44 +352,9 @@ impl Vec<syn::Attribute> {
         if f { z.pop(); }
         Ok(z)
     }
-    fn scan_ridl_tag_name(&self) -> Result<Option<String>> {
-        let mut first = None;
-        for x in self.iter() {
-            match x.scan_ridl_tag_name()? {
-                Some(x) => first = Some(x),
-                None => (),
-            }
-        }
-        Ok(first)
-    }
 }
 #[ext(name=AttrScanDocComment)]
 impl syn::Attribute {
-    /// Scans RIDL tag definition.
-    /// Returns `Ok(None)` if this attribute is not a RIDL attribute.
-    fn scan_ridl_tag_name(&self) -> Result<Option<String>> {
-        if self.path.ident_string_or_default() != "ridl" { return Ok(None) }
-        let m = match self.parse_meta() {
-            Ok(x) => x,
-            Err(x) => return err(&self, &format!("{}", x)),
-        };
-        const BAD_FORM: &str = r#"expected `#[ridl(tag="property_name")` form"#;
-        let list = if let syn::Meta::List(x) = m { x } else { return err(&m, BAD_FORM) };
-        for nested in list.nested.iter() {
-            let mm = if let syn::NestedMeta::Meta(x) = nested { x } else { return err(&nested, BAD_FORM) };
-            let kv = match mm {
-                syn::Meta::NameValue(kv) => kv,
-                _ => return err(&mm, BAD_FORM),
-            };
-            if kv.path.ident_string_or_default() != "tag" { return Ok(None) }
-            let tag = match &kv.lit {
-                syn::Lit::Str(tag) => tag,
-                _ => return err(&kv, BAD_FORM)
-            };
-            return Ok(Some(tag.value()));
-        }
-        err(&list, BAD_FORM)
-    }
     fn scan_doc_comment(&self) -> Result<String> {
         if self.path.ident_string_or_default() != "doc" { return Ok(String::new()) }
         const BAD_FORM: &str = "unexpected comment form";

@@ -21,3 +21,4 @@ serde_with = "1.11.0"
 structopt = { version = "0.3", default-features = false }
 strum = { version = "0.23", features = ["derive"] }
 strum_macros = "0.23"
+ridl_derive = { path = "../ridl_derive" }

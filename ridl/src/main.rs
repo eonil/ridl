@@ -31,11 +31,6 @@ struct Opt {
     /// For now the only supported option is `camel` which means `camelCase`.
     #[structopt(long="rename")]
     rename: Option<model::rename::Rule>,
-
-    /// Optional REST API definition.
-    /// This will be emitted as a part of OpenAPI3 code-gen.
-    #[structopt(long="rest")]
-    rest: Option<String>,
 }
 #[derive(strum_macros::EnumString)]
 enum Language {
@@ -77,7 +72,7 @@ fn run() -> Result<()> {
     
     let dst = match &opt.language {
         Language::RIDL1 => render::ridl1::render_ridl1(&model)?,
-        Language::OpenAPI3 => render::openapi3::render_openapi3_with_rest(&model, &opt.scan_rest()?)?,
+        Language::OpenAPI3 => render::openapi3::render_openapi3(&model)?,
         Language::Swift5 => render::swift5::render_swift5(&model)?,
         Language::TypeScript4 => render::typescript4::render_typescript4(&model)?,
     };
@@ -88,15 +83,6 @@ fn run() -> Result<()> {
     }
 
     Ok(())
-}
-
-impl Opt {
-    fn scan_rest(&self) -> Result<model::rest::RESTAPI> {
-        let path = if let Some(path) = &self.rest { path } else { return Ok(model::rest::RESTAPI::default()) };
-        let code = read_all_from_file(&path)?;
-        let def = serde_yaml::from_str::<model::rest::RESTAPI>(&code)?;
-        Ok(def)
-    }
 }
 
 fn read_all_from_stdin() -> Result<String> {
