@@ -9,6 +9,7 @@ pub mod log;
 pub mod span;
 pub mod skip;
 pub mod rename;
+pub mod rest;
 
 use serde_derive::{Serialize, Deserialize};
 

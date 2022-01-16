@@ -92,14 +92,29 @@ pub struct ServerVariable {
     pub description: Option<String>,
 }
 
+pub type Paths = Map<String,PathItem>;
+
 #[skip_serializing_none]
 #[derive(Eq, PartialEq)]
 #[derive(Serialize, Deserialize)]
 #[derive(Default)]
 #[derive(Debug)]
 #[serde(rename_all="camelCase")]
-pub struct Paths {
-
+pub struct PathItem {
+    #[serde(rename="$ref")]
+    r#ref: Option<String>,
+    summary: Option<String>,
+    description: Option<String>,
+    // get: Option<Operation>,
+    // put: Option<Operation>,
+    // post: Option<Operation>,
+    // delete: Option<Operation>,
+    // options: Option<Operation>,
+    // head: Option<Operation>,
+    // patch: Option<Operation>,
+    // trace: Option<Operation>,
+    // servers: Option<Vec<Server>>,
+    // parameters: Option<ReferenceOrParameter>,
 }
 
 #[skip_serializing_none]

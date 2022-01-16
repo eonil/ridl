@@ -8,6 +8,9 @@ use crate::model::*;
 use crate::model::log::*;
 
 pub fn render_openapi3(x:&KMod) -> Result<String> {
+    render_openapi3_with_rest(x, &rest::RESTAPI::default())
+}
+pub fn render_openapi3_with_rest(x:&KMod, rest:&rest::RESTAPI) -> Result<String> {
     let doc = x.render()?;
     let code = match serde_yaml::to_string(&doc) {
         Err(xx) => return err(x.span, &format!("YAML encoding error: {}", xx)),

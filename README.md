@@ -209,6 +209,51 @@ Schema Export
 
 
 
+
+Secondary REST Support
+----------------------
+RIDL is primarily designed for streaming message I/O. (e.g. pub/sub)
+Although REST support is not a primary goal, but needed to utilize existing OpenAPI based tools.
+RIDL has primitive level of REST code-gen support that will be enough for most cases.
+At this point, REST code-gen is supported only in these targets.
+
+- OpenAPI3.
+- Swift5.
+
+Also, there's no Rust-based syntax for REST API definitions.
+Designing and implementing in-Rust syntax for REST API takes too much cost without semantic analysis.
+You need to define REST API in YAML and pass it with `--rest` extra option.
+
+    ridl openapi3 --in src.rs --out dst.yaml --rest rest.yaml
+
+Model for the REST support is defined in `::ridl::model::rest` module.
+Here's an example.
+
+```yaml
+----
+functions:
+  - comment: | 
+      Submits an order.
+    attributes:
+      - private
+    input:
+      method: POST
+      path: /order/submit
+      query: OrderSubmitInput
+    output:
+      - status: 200
+        body: OrderSubmitOutput
+        comment: OK.
+      - status: 401
+        body: APIError
+        comment: Unauthorized.
+```
+
+
+
+
+
+
 License
 -------
 Using this code is licensed under "MIT License".
