@@ -1,8 +1,7 @@
 use crate::prelude::*;
 use crate::model::{KAttrs,KAttrREST};
 use crate::model::log::*;
-use super::ir;
-use super::err;
+use super::{ir, err, err_with};
 
 #[ext(name=VecAttrScan)]
 pub(super) impl Vec<syn::Attribute> {
@@ -31,9 +30,9 @@ pub(super) impl Vec<syn::Attribute> {
                     let v = ir.params.iter().next().map(ir::AttrParam::value);
                     match (n,v) {
                         ("status",Some(Some(ir::AttrValue::I64(x)))) => KAttrREST::Status(*x),
-                        ("status",_) => return err(a, BAD_FORM_ERR),
+                        ("status",_) => return err_with(a, BAD_FORM_ERR),
                         ("mime",Some(Some(ir::AttrValue::String(x)))) => KAttrREST::MIME(x.to_owned()),
-                        ("mime",_) => return err(a, BAD_FORM_ERR),
+                        ("mime",_) => return err_with(a, BAD_FORM_ERR),
                         _ => continue,
                     }
                 },

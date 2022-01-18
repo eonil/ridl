@@ -121,9 +121,9 @@ impl KSumTypeVariant {
         Ok(oa::ReferencedOrInlineSchema::Inline(x))
     }
     fn render_type_based_form(&self) -> Result<oa::ReferencedOrInlineSchema> {
-        if self.content.array == true { return err(self.span, "array is not supported in type-based sum-type") }
-        if self.content.optional == true { return err(self.span, "optional is not supported in type-based sum-type") }
-        self.content.r#type.render(self.span)
+        if self.content.is_vector() == true { return err(self.span, "vector-type is not supported in type-based sum-type") }
+        if self.content.is_option() == true { return err(self.span, "option-type is not supported in type-based sum-type") }
+        self.content.render(self.span)
     }
 }
 
@@ -138,7 +138,7 @@ impl KProdType {
         let mut propks = oa::Map::new();
         for field in self.fields.iter() {
             let propk = field.content.render(self.span)?;
-            if !field.content.optional { reqs.push(field.name.clone()) }
+            if !field.content.is_option() { reqs.push(field.name.clone()) }
             propks.insert(field.name.clone(), propk);
         }
         k.properties.set(propks);
@@ -146,22 +146,26 @@ impl KProdType {
     }
 }
 
-#[ext(name=KContentStorageOpenAPI3Rendering)]
-impl KContentStorage {
+#[ext(name=KTypeOpenAPI3Rendering)]
+impl KType {
     fn render(&self, span:KSpan) -> Result<oa::ReferencedOrInlineSchema> {
-        if self.array {
-            let mut k = oa::Schema::default();
-            k.items = Some(Box::new(self.r#type.render(span)?));
-            k.r#type.set("array");
-            Ok(oa::ReferencedOrInlineSchema::Inline(k))
-        }
-        else {
-            self.r#type.render(span)
+        match self {
+            KType::Vector(x) => {
+                let mut k = oa::Schema::default();
+                k.items = Some(Box::new(x.render(span)?));
+                k.r#type.set("array");
+                Ok(oa::ReferencedOrInlineSchema::Inline(k))
+            },
+            KType::Option(x) => x.render(span), // Optinality need to be defined in parent node.
+            KType::Scalar(x) => x.render(span),
+            KType::Never => return err(span, "never-type is not unsupported"),
+            KType::Unknown => return err(span, "unsupported type pattern"),
         }
     }
 }
-#[ext(name=KTypeRefOpenAPI3Rendering)]
-impl KTypeRef {
+
+#[ext(name=KScalarTypeOpenAPI3Rendering)]
+impl KScalarType {
     fn render(&self, span:KSpan) -> Result<oa::ReferencedOrInlineSchema> {
         fn inline(r#type:&str, format:&str) -> Result<oa::ReferencedOrInlineSchema> {
             let mut k = oa::Schema::default();
@@ -169,16 +173,17 @@ impl KTypeRef {
             k.format = if format.is_empty() { None } else { Some(format.to_string()) };
             Ok(oa::ReferencedOrInlineSchema::Inline(k))
         }
-        use KTypeRef::*;
+        use KScalarType::*;
+        use KPrimType::*;
         match self {
             Unit => return err(span, "unit-type (`()`) is not supported"),
-            Prim(KPrimType::Bool) => inline("boolean", ""),
-            Prim(KPrimType::I32) => inline("integer", "int32"),
-            Prim(KPrimType::I64) => inline("integer", "int64"),
-            Prim(KPrimType::F32) => inline("number", "float"),
-            Prim(KPrimType::F64) => inline("number", "double"),
-            Prim(KPrimType::String) => inline("string", ""),
-            Def(x) => Ok(oa::ReferencedOrInlineSchema::Referenced(oa::Reference { r#ref: make_opanapi3_ref(&x.name) })),
+            Prim(Bool) => inline("boolean", ""),
+            Prim(I32) => inline("integer", "int32"),
+            Prim(I64) => inline("integer", "int64"),
+            Prim(F32) => inline("number", "float"),
+            Prim(F64) => inline("number", "double"),
+            Prim(String) => inline("string", ""),
+            Def(x) => Ok(oa::ReferencedOrInlineSchema::Referenced(oa::Reference { r#ref: make_opanapi3_ref(&x) })),
         }
     }
 }

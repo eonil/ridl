@@ -3,9 +3,9 @@ use crate::prelude::PVec;
 use crate::model::log::ErrorLogs;
 use crate::model::log::Result;
 use crate::scan::err::ResultConversion;
-use crate::scan::err;
+use crate::scan::{err, err_with};
 
-pub fn scan(x:&Vec<syn::Attribute>) -> Result<Vec<Attr>> {
+pub fn scan_attrs(x:&Vec<syn::Attribute>) -> Result<Vec<Attr>> {
     let mut vals = Vec::new();
     let mut errs = PVec::new();
     for xx in x.iter() {
@@ -123,7 +123,7 @@ impl std::convert::TryFrom<&syn::Attribute> for Attr {
                 for sub in x.nested.iter() {
                     let p = match sub {
                         syn::NestedMeta::Meta(Path(x)) => AttrParam::Key(scan_non_generic_name(x)?),
-                        syn::NestedMeta::Meta(List(x)) => return err(x, "unsupported attribute form"),
+                        syn::NestedMeta::Meta(List(x)) => return err_with(x, "unsupported attribute form"),
                         syn::NestedMeta::Meta(NameValue(x)) => AttrParam::KeyValue(scan_non_generic_name(&x.path)?, scan_value(&x.lit)?),
                         syn::NestedMeta::Lit(x) => AttrParam::Value(scan_value(x)?),
                     };
@@ -137,9 +137,9 @@ impl std::convert::TryFrom<&syn::Attribute> for Attr {
     }
 }
 fn scan_non_generic_name(p:&syn::Path) -> Result<String> {
-    if p.segments.is_empty() { return err(&p, "zero-length path segment is not supported") }
+    if p.segments.is_empty() { return err_with(&p, "zero-length path segment is not supported") }
     let seg = p.segments.last().unwrap();
-    if let syn::PathArguments::None = seg.arguments {} else { return err(&seg, "generic parameter is not supported") }
+    if let syn::PathArguments::None = seg.arguments {} else { return err_with(&seg, "generic parameter is not supported") }
     Ok(seg.ident.to_string())
 }
 fn scan_value(x:&syn::Lit) -> Result<AttrValue> {
@@ -147,7 +147,7 @@ fn scan_value(x:&syn::Lit) -> Result<AttrValue> {
         syn::Lit::Bool(b) => AttrValue::Bool(b.value),
         syn::Lit::Int(u) => AttrValue::I64(u.base10_parse::<i64>().into_scan_result()?),
         syn::Lit::Str(s) => AttrValue::String(s.value()),
-        _ => return err(&x, "unsupported literal form")
+        _ => return err_with(&x, "unsupported literal form")
     };
     Ok(v)
 }

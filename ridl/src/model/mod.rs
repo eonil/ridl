@@ -7,7 +7,9 @@
 
 pub mod log;
 pub mod span;
-pub mod attr;
+mod attr;
+mod r#type;
+
 pub mod skip;
 pub mod rename;
 pub mod rest;
@@ -16,6 +18,7 @@ use serde_derive::{Serialize, Deserialize};
 
 pub use span::{KSpan, KLineColumn};
 pub use attr::{KAttrs, KAttrREST};
+pub use r#type::{KType, KScalarType, KPrimType, KTypeName};
 
 #[derive(Serialize,Deserialize)]
 #[derive(Eq,PartialEq)]
@@ -77,7 +80,7 @@ pub struct KNewType {
     #[serde(skip_serializing_if="is_default")]
     pub attrs: KAttrs,
     pub comment: String,
-    pub origin: KTypeRef,
+    pub origin: KType,
 }
 
 /// Finite constant value set.
@@ -157,7 +160,7 @@ pub struct KSumTypeVariant {
     /// Type of stored data in this sum-type variant.
     /// Name-based sum-types can define array/optional content.
     /// Type-based sum-types only can define explicit reference to other type.
-    pub content: KContentStorage,
+    pub content: KType,
 }
 
 #[derive(Serialize,Deserialize)]
@@ -186,7 +189,7 @@ pub struct KProdTypeField {
     #[serde(default)]
     #[serde(skip_serializing_if="is_default")]
     pub attrs: KAttrs,
-    pub content: KContentStorage,
+    pub content: KType,
 }
 
 
@@ -203,52 +206,12 @@ pub struct KFuncType {
     #[serde(default)]
     #[serde(skip_serializing_if="is_default")]
     pub attrs: KAttrs,
-    pub input: KTypeRef,
-    pub output: KTypeRef,
+    pub input: KType,
+    pub output: KType,
 }
     
 
 
-
-
-
-
-
-
-/// An inveted concept to simplify type definition.
-/// Proper support for optional/array types will require full support for generics.
-/// To eliminate complexity of generics support, I just baked-in some essential generic patterns.
-#[derive(Serialize,Deserialize)]
-#[derive(Eq,PartialEq)]
-#[derive(Default)]
-#[derive(Clone)]
-#[derive(Debug)]
-pub struct KContentStorage {
-    pub optional: bool,
-    pub array: bool,
-    pub r#type: KTypeRef,
-}
-
-#[derive(Serialize,Deserialize)]
-#[derive(Eq,PartialEq)]
-#[derive(Clone)]
-#[derive(Debug)]
-pub enum KTypeRef {
-    /// Unit type.
-    /// Some code-gen can reject unit type.
-    /// Unit type is implicitly defined by KCG.
-    Unit,
-    /// Pre-defined primitive types.
-    /// Some code-gen can reject certain set of primitive types.
-    /// Primitive types are implicitly defined by KCG.
-    Prim(KPrimType),
-    /// Name to a defined type.
-    /// This must be a defined name in schema document.
-    Def(KItemPath),
-}
-impl Default for KTypeRef {
-    fn default() -> KTypeRef { Self::Unit }
-}
 
 #[derive(Serialize,Deserialize)]
 #[derive(Eq,PartialEq)]
@@ -260,21 +223,6 @@ pub struct KItemPath {
     // pub mods: Vec<String>,
     pub name: String,
 }
-
-/// A simple value with no substructure.
-#[derive(Serialize,Deserialize)]
-#[derive(Eq,PartialEq)]
-#[derive(Clone,Copy)]
-#[derive(Debug)]
-pub enum KPrimType {
-    Bool,
-    I32,
-    I64,
-    F32,
-    F64,
-    String,
-}
-
 
 
 

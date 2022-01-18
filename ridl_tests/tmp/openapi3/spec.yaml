@@ -9,14 +9,12 @@ components:
   schemas:
     Tuna:
       type: string
-    Salmon:
-      type: string
     Mineral:
       title: Mineral
       enum:
-        - IronMetal
-        - Alumina
-        - Arcana
+        - ironMetal
+        - alumina
+        - arcana
       type: string
       description: Ingredients of magic.
     Pet:
@@ -33,7 +31,7 @@ components:
             type: string
         walk:
           type: boolean
-        living_address:
+        livingAddress:
           $ref: "#/components/schemas/Address"
         contents:
           type: array
@@ -52,11 +50,11 @@ components:
       type: object
       oneOf:
         - properties:
-            Sushi:
+            sushi:
               $ref: "#/components/schemas/Tuna"
           description: "\n"
         - properties:
-            PanFriedSteak:
+            panFriedSteak:
               $ref: "#/components/schemas/Salmon"
           description: "Good salmons are reddish.\n\n"
       description: Edibles.

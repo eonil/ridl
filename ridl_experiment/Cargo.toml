@@ -1,0 +1,23 @@
+[package]
+name = "ridl_experiment"
+version = "0.1.0"
+edition = "2021"
+description = "Experimental implementation based on sementic analysis infra."
+
+[dependencies]
+project_model = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+rust-analyzer = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+ide = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+hir = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+vfs = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+base_db = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+hir_ty = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+cfg = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+paths = { git = "https://github.com/rust-analyzer/rust-analyzer", tag = "2022-01-17" }
+im-rc = "15.0.0"
+serde = "1.0.133"
+serde_derive = "1.0.133"
+serde_json = "1.0.74"
+serde_yaml = "0.8.23"
+
+[workspace]
