@@ -1,157 +1,122 @@
 use syn::spanned::Spanned;
-use super::Result;
-use super::err;
-use super::{Unknown};
+use crate::model::KSpan;
+use super::{Result, err, err_with, SpanScan};
 
+#[derive(Eq,PartialEq)]
 pub struct Type {
-    name: String,
-    /// Generic arguments.
-    params: Vec<Type>,
+    pub span: KSpan,
+    /// Path expression except actual type name. (last part)
+    pub path: String,
+    pub name: String,
+    /// Parameter or bound Generic arguments.
+    pub params: Vec<Type>,
 }
-pub enum TypeName {
-    Vec,
+
+/// Please note that `syn::Type` does not provide `span`.
+pub fn scan_type(x:&syn::Type) -> Result<Type> {
+    use syn::Type::*;
+    match x {
+        Ptr(x) => scan_type(&x.elem),
+        Reference(x) => scan_type(&x.elem),
+        Paren(x) => scan_type(&x.elem),
+        Array(x) => scan_type(&x.elem),
+        Slice(x) => scan_type(&x.elem),
+        Path(x) => {
+            use syn::PathArguments::*;
+            if x.qself.is_some() { return err_with(x, BAD_FORM) };
+            let p = &x.path;
+            if p.segments.is_empty() { return err_with(x, BAD_FORM) }
+            let mut segs = p.segments.clone();
+            let last = segs.pop().unwrap().into_value();
+            let mut expr = String::new();
+            if p.leading_colon.is_some() { 
+                expr.push_str("::");
+            }
+            for seg in segs {
+                match seg.arguments {
+                    None => (),
+                    _ => return err_with(x, "type argument in an intermediate path segment is not supported"),
+                }
+                expr.push_str(&seg.ident.to_string());
+                expr.push_str("::");
+            }
+            let mut last_params = Vec::new();
+            match last.arguments {
+                None => (),
+                AngleBracketed(generic) => {
+                    for arg in generic.args {
+                        use syn::GenericArgument::*;
+                        match &arg {
+                            Lifetime(x) => continue,
+                            Type(x) => last_params.push(scan_type(x)?),
+                            Binding(x) => return err_with(x, "binding generic parameter is not supported"),
+                            Constraint(x) => return err_with(x, "constraint generic parameter is not supported"),
+                            Const(x) => return err_with(x, "const generic parameter is not supported"),
+                        }
+                    }
+                },
+                Parenthesized(_) => return err_with(x, "unsupported generic parameter form"),
+            }
+            Ok(Type {
+                span: x.span().scan(),
+                path: expr,
+                name: last.ident.to_string(),
+                params: last_params,
+            })
+        },
+        BareFn(x) => err_with(x, BAD_FORM),
+        Group(x) => err_with(x, BAD_FORM),
+        ImplTrait(x) => err_with(x, BAD_FORM),
+        Infer(x) => err_with(x, BAD_FORM),
+        Macro(x) => err_with(x, BAD_FORM),
+        Never(x) => err_with(x, BAD_FORM),
+        TraitObject(x) => err_with(x, BAD_FORM),
+        Tuple(x) => err_with(x, BAD_FORM),
+        Verbatim(x) => err_with(x, BAD_FORM),
+        _ => err_with(x, "unknown type case")
+    }    
 }
 
-// /// Scans a simplified type IR.
-// /// - Mobule name prefixed typed becomes an error.
-// /// - Only collect Last identifier
-// /// - `Path` becomes to a reference to an explicit type.
-// ///   - `Path` to `Option` type will become a RIDL optional.
-// /// - `References`, `Paren`, `Ptr` will be stripped away.
-// /// - `Array`, `Slice` becomes a RIDL array.
-// /// - Everything else is not supported and returns an `Err`.
-// fn scan_type(x:&syn::Type) -> Result<Type> {
-//     match x {
-//         syn::Type::Paren(x) => return scan_type(&x.elem),
-//         syn::Type::Ptr(x) => return scan_type(&x.elem),
-//         syn::Type::Reference(x) => return scan_type(&x.elem),
-//         _ => (),
-//     }
-//     if let Ok(x) = scan_vector_type(x) { return Ok(x) }
-//     if let Ok(x) = scan_option_type(x) { return Ok(x) }
-//     if let Ok(x) = scan_scalar_type(x) { return Ok(KContentStorage {
-//         optional: false,
-//         array: false,
-//         r#type: x,
-//     }) }
-//     err(&x, "unsupported type pattern (RIDL supports only certain shape of limited type pattern)")
-// }
+const BAD_FORM: &'static str = "bad/unsupported type form";
 
-// fn scan_vector_type(x:&syn::Type) -> Result<Option<Type>> {
-//     match x {
-//         syn::Type::Array(x) => {
-//             let elem = scan_scalar_type(&x.elem)?;
-//             Ok(KContentStorage {
-//                 optional: false,
-//                 array: true,
-//                 r#type: elem,
-//             })
-//         },
-//         syn::Type::Slice(x) => {
-//             let elem = (*x.elem).scan_as_single_ref()?;
-//             Ok(KContentStorage {
-//                 optional: false,
-//                 array: true,
-//                 r#type: elem,
-//             })
-//         },
-//         syn::Type::Path(x) => {
-//             let segs = &x.path.segments;
-//             if segs.len() == 1 {} else { return err(&x, "") }
-//             let seg = segs.last().unwrap();
-//             if seg.ident.to_string() == "Vec" {} else { return err(&seg, "this is not a `Vec`") }
-//             let args = match &seg.arguments {
-//                 syn::PathArguments::None => return err(&seg, "missing generic argument in `Vec`"),
-//                 syn::PathArguments::Parenthesized(_) => return err(&seg, "bad generic argument in `Vec`"),
-//                 syn::PathArguments::AngleBracketed(xx) => &xx.args,
-//             };
-//             for arg in args {
-//                 let elem = match arg {
-//                     syn::GenericArgument::Type(xxx) => xxx.scan_as_single_ref()?,
-//                     _ => continue,
-//                 };
-//                 return Ok(KContentStorage {
-//                     optional: false,
-//                     array: true,
-//                     r#type: elem,
-//                 })
-//             }
-//             err(&x, "missing generic argument in `Vec`.")
-//         },
-//         _ => err(&self, "this is not an array type"),
-//     }
-// }
+#[cfg(test)]
+mod test {
+    use quote::quote;
+    use super::scan_type;
+    
+    #[test]
+    fn case1() {
+        let a = quote! {
+            std::collections::HashMap<u32, std::path::PathBuf>
+        };
+        let b: syn::Type = syn::parse2(a).unwrap();
+        let c = scan_type(&b).unwrap();
+        assert_eq!(c.name, "HashMap");
+        assert_eq!(c.params.len(), 2);
+        assert_eq!(c.params[0].name, "u32");
+        assert_eq!(c.params[1].name, "PathBuf");
+    }
+
+    #[test]
+    #[should_panic]
+    fn case2() {
+        let a = quote! {
+            std::collections<a>::HashMap<u32, std::path::PathBuf>
+        };
+        let b: syn::Type = syn::parse2(a).unwrap();
+        let c = scan_type(&b).unwrap();
+        assert_eq!(c.name, "HashMap");
+        assert_eq!(c.params.len(), 2);
+        assert_eq!(c.params[0].name, "u32");
+        assert_eq!(c.params[1].name, "PathBuf");
+    }
+}
 
 
 
 
 
 
-// fn scan_as_optional(&self) -> Result<KContentStorage> {
-//     match self {
-//         syn::Type::Path(x) => {
-//             let segs = &x.path.segments;
-//             if segs.len() == 1 {} else { return err(&x, "") }
-//             let seg = segs.last().unwrap();
-//             if seg.ident.to_string() == "Option" {} else { return err(&seg, "this is not an `Option`") }
-//             let args = match &seg.arguments {
-//                 syn::PathArguments::None => return err(&seg, "missing generic argument in `Option`"),
-//                 syn::PathArguments::Parenthesized(_) => return err(&seg, "bad generic argument in `Option`"),
-//                 syn::PathArguments::AngleBracketed(xx) => &xx.args,
-//             };
-//             for arg in args {
-//                 let elem = match arg {
-//                     syn::GenericArgument::Type(xxx) => xxx.scan_as_single_ref()?,
-//                     _ => continue,
-//                 };
-//                 return Ok(KContentStorage {
-//                     optional: true,
-//                     array: false,
-//                     r#type: elem,
-//                 })
-//             }
-//             err(&x, "missing generic argument in `Option`.")
-//         },
-//         _ => err(&self, "this is not an optional type"),
-//     }
-// }
-// fn scan_as_single_ref(&self) -> Result<KTypeRef> {
-//     match self {
-//         syn::Type::Paren(x) => (*x.elem).scan_as_single_ref(),
-//         syn::Type::Ptr(x) => (*x.elem).scan_as_single_ref(),
-//         syn::Type::Reference(x) => (*x.elem).scan_as_single_ref(),
-//         syn::Type::Path(x) => {
-//             use syn::spanned::Spanned;
-//             let name = x.path.scan_name()?;
-//             let tyref = match name.as_str() {
-//                 "bool" => KTypeRef::Prim(KPrimType::Bool),
-//                 "i32" => KTypeRef::Prim(KPrimType::I32),
-//                 "i64" => KTypeRef::Prim(KPrimType::I64),
-//                 "f32" => KTypeRef::Prim(KPrimType::F32),
-//                 "f64" => KTypeRef::Prim(KPrimType::F64),
-//                 "str" => KTypeRef::Prim(KPrimType::String),
-//                 "String" => KTypeRef::Prim(KPrimType::String),
-//                 _ => KTypeRef::Def(KItemPath {
-//                     span: self.span().scan(),
-//                     name: name,
-//                 }),
-//             };
-//             Ok(tyref)
-//         },
-//         _ => err(&self, "not a reference to an explicit name"),
-//     }
-// }
-// }
 
-// #[ext(name=PathScan)]
-// impl syn::Path {
-// fn scan_name(&self) -> Result<String> {
-//     if let Some(ident) = self.get_ident() { return Ok(ident.to_string()) }
-//     err(self, "not an ident")
-// }
-// fn scan_ident(&self) -> Result<String> {
-//     if let Some(s) = self.get_ident().map(ToString::to_string) { return Ok(s) }
-//     err(self, "")
-// }
-// }
+
 

@@ -3,7 +3,7 @@ use serde_derive::{Serialize, Deserialize};
 // #[derive(Serialize,Deserialize)]
 #[derive(Eq,PartialEq)]
 #[derive(Default)]
-#[derive(Clone,Copy)]
+#[derive(Copy,Clone)]
 #[derive(Debug)]
 pub struct KSpan {
     pub start: KLineColumn,

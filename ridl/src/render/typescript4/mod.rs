@@ -117,7 +117,7 @@ impl TypeScript4Rendering for KProdType {
 }
 impl TypeScript4Rendering for KProdTypeField {
     fn render(&self) -> Result<String> {
-        let name_with_optionality = if self.content.optional { format!("{}?", self.name) } else { self.name.clone() };
+        let name_with_optionality = if self.content.is_option() { format!("{}?", self.name) } else { self.name.clone() };
         Ok(format!(
             indoc!(r#"
                 {comment}
@@ -150,25 +150,31 @@ impl TypeScript4Rendering for KFuncType {
 
 
 
-impl TypeScript4RenderingWithSpan for KContentStorage {
+impl TypeScript4RenderingWithSpan for KType {
     fn render(&self, span:KSpan) -> Result<String> {
-        let tycode = self.r#type.render(span)?;
-        if self.array { return Ok(format!("{tycode}[]", tycode=tycode)) }
-        Ok(tycode)
+        use KType::*;
+        match self {
+            Vector(x) => return Ok(format!("{code}[]", code=x.render(span)?)),
+            Option(x) => x.render(span), // Optionality need to be encoded in field, not type.
+            Scalar(x) => x.render(span),
+            Never => return err(span, "never-type is not unsupported"),
+            Unknown => return err(span, "unsupported type pattern"),
+        }
     }
 }
-impl TypeScript4RenderingWithSpan for KTypeRef {
+impl TypeScript4RenderingWithSpan for KScalarType {
     fn render(&self, span:KSpan) -> Result<String> {
-        use KTypeRef::*;
+        use KScalarType::*;
+        use KPrimType::*;
         let x = match self {
             Unit => return err(span, "unit-type (`()`) is not supported"),
-            Prim(KPrimType::Bool) => "boolean",
-            Prim(KPrimType::I32) => "number",
-            Prim(KPrimType::I64) => return err(span, "`i64` is not supported in TypeScript"),
-            Prim(KPrimType::F32) => return err(span, "`f32` is not supported in TypeScript"),
-            Prim(KPrimType::F64) => "number",
-            Prim(KPrimType::String) => "string",
-            Def(x) => &x.name,
+            Def(x) => &x,
+            Prim(Bool) => "boolean",
+            Prim(I32) => "number",
+            Prim(I64) => return err(span, "`i64` is not supported in TypeScript"),
+            Prim(F32) => return err(span, "`f32` is not supported in TypeScript"),
+            Prim(F64) => "number",
+            Prim(String) => "string",
         };
         Ok(x.to_string())
     }

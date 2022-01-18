@@ -10,26 +10,19 @@ items:
       origin:
         Scalar:
           Prim: String
-  - New:
-      span: "6:0-6:21"
-      name: Salmon
-      comment: ""
-      origin:
-        Scalar:
-          Prim: String
   - Enum:
       span: "8:0-15:1"
       name: Mineral
       comment: "Ingredients of magic.\n\n"
       cases:
         - span: "12:4-12:13"
-          name: IronMetal
+          name: ironMetal
           comment: ""
         - span: "13:4-13:11"
-          name: Alumina
+          name: alumina
           comment: ""
         - span: "14:4-14:10"
-          name: Arcana
+          name: arcana
           comment: ""
   - Prod:
       span: "20:0-33:1"
@@ -55,7 +48,7 @@ items:
             Scalar:
               Prim: Bool
         - span: "28:4-29:35"
-          name: living_address
+          name: livingAddress
           comment: ""
           attrs:
             rest:
@@ -94,7 +87,7 @@ items:
           - MessageOut
       variants:
         - span: "46:4-48:15"
-          name: Sushi
+          name: sushi
           comment: "\n"
           attrs:
             rest:
@@ -104,7 +97,7 @@ items:
             Scalar:
               Def: Tuna
         - span: "49:4-52:25"
-          name: PanFriedSteak
+          name: panFriedSteak
           comment: "Good salmons are reddish.\n\n"
           attrs:
             rest:

@@ -152,26 +152,31 @@ impl Swift5Rendering for KFuncType {
 
 
 
-impl Swift5RenderingWithSpan for KContentStorage {
+impl Swift5RenderingWithSpan for KType {
     fn render(&self, span:KSpan) -> Result<String> {
-        let tycode = self.r#type.render(span)?;
-        if self.array { return Ok(format!("[{tycode}]", tycode=tycode)) }
-        if self.optional { return Ok(format!("{tycode}?", tycode=tycode)) }
-        Ok(tycode)
+        use KType::*;
+        match self {
+            Vector(x) => return Ok(format!("[{code}]", code=x.render(span)?)),
+            Option(x) => return Ok(format!("{code}?", code=x.render(span)?)),
+            Scalar(x) => x.render(span),
+            Never => return err(span, "never-type is not unsupported"),
+            Unknown => return err(span, "unsupported type pattern"),
+        }
     }
 }
-impl Swift5RenderingWithSpan for KTypeRef {
+impl Swift5RenderingWithSpan for KScalarType {
     fn render(&self, span:KSpan) -> Result<String> {
-        use KTypeRef::*;
+        use KScalarType::*;
+        use KPrimType::*;
         let x = match self {
             Unit => return err(span, "unit-type (`()`) is not supported"),
-            Prim(KPrimType::Bool) => "Bool",
-            Prim(KPrimType::I32) => "Int32",
-            Prim(KPrimType::I64) => "Int64",
-            Prim(KPrimType::F32) => "Float32",
-            Prim(KPrimType::F64) => "Floaf64",
-            Prim(KPrimType::String) => "String",
-            Def(x) => &x.name,
+            Def(x) => &x,
+            Prim(Bool) => "Bool",
+            Prim(I32) => "Int32",
+            Prim(I64) => "Int64",
+            Prim(F32) => "Int32",
+            Prim(F64) => "Int64",
+            Prim(String) => "String",
         };
         Ok(x.to_string())
     }

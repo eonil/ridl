@@ -1,20 +1,18 @@
 /// Here be dragons.
 typealias Tuna = String
 
-typealias Salmon = String
-
 /// Ingredients of magic.
 enum Mineral: String, Equatable, Codable {
-    case IronMetal = "IronMetal"
-    case Alumina = "Alumina"
-    case Arcana = "Arcana"
+    case ironMetal = "ironMetal"
+    case alumina = "alumina"
+    case arcana = "arcana"
 }
 
 struct Pet: Equatable, Codable {
     var name: [String]
     /// Did they take a walk today?
     var walk: Bool
-    var living_address: Address?
+    var livingAddress: Address?
     var contents: [u8]
 }
 
@@ -24,9 +22,9 @@ struct Address: Equatable, Codable {
 
 /// Edibles.
 enum Dish: Equatable, Codable {
-    case Sushi(Tuna)
+    case sushi(Tuna)
     /// Good salmons are reddish.
-    case PanFriedSteak(Salmon)
+    case panFriedSteak(Salmon)
 }
 
 struct APIError: Equatable, Codable {
